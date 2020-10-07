@@ -1,4 +1,4 @@
 export default {
-	HOST: 'localhost',
-	DB: 'local_database',
+  HOST: 'localhost',
+  DB: 'local_database',
 };
