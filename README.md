@@ -11,3 +11,10 @@ Useful commands:
 - Stop: `sudo systemctl stop mongod`
 - Restart: `sudo systemctl restart mongod` 
 - Shell: `mongo`
+
+## First time set up
+
+1. Configure GIT to use local hooks:
+`git config core.hooksPath .githooks`
+1. Install dependencies:
+`npm install`
