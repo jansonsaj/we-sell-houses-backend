@@ -1,5 +1,6 @@
-const Koa = require('koa');
-const Router = require('koa-router');
+import Koa from 'koa';
+import Router from 'koa-router';
+import db from './models/db.js';
 
 const port = process.env.PORT || 3000;
 
@@ -15,5 +16,10 @@ function welcomeAPI(ctx) {
 	}
 }
 
-app.listen(port);
-console.log(`Listening on port: ${port}`);
+async function start() {
+	await db.connect();
+	app.listen(port);
+	console.log(`Listening on port: ${port}`);
+}
+
+start();
