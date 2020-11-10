@@ -1,0 +1,106 @@
+{
+    "$schema": "http://json-schema.org/draft-07/schema#",
+    "definitions": {
+        "id": {
+            "type": "string",
+            "description": "Unique user identifier"
+        },
+        "email": {
+            "description": "Unique email address",
+            "type": "string",
+            "format": "email"
+        },
+        "roles": {
+            "type": "array",
+            "items": {
+                "$ref": "#role/definitions/id"
+            }
+        },
+        "password": {
+            "description": "User's password",
+            "type": "string",
+            "minLength": 6
+        },
+        "accessToken": {
+            "description": "User's JWT access token",
+            "type": "string"
+        },
+        "user": {
+            "$id": "#user",
+            "title": "User",
+            "description": "Full user object",
+            "type": "object",
+            "properties": {
+                "id": {
+                    "$ref": "#/definitions/id"
+                },
+                "email": {
+                    "$ref": "#/definitions/email"
+                },
+                "roles": {
+                    "$ref": "#/definitions/roles"
+                },
+                "password": {
+                    "$ref": "#/definitions/password"
+                }
+            },
+            "required": ["email", "password"],
+            "additionalProperties": false
+        },
+        "userView": {
+            "$id": "#userView",
+            "title": "User View",
+            "description": "Data visible to users",
+            "type": "object",
+            "properties": {
+                "id": {
+                    "$ref": "#/definitions/id"
+                },
+                "email": {
+                    "$ref": "#/definitions/email"
+                },
+                "roles": {
+                    "$ref": "#/definitions/roles"
+                }
+            }
+        },
+        "userUpdate": {
+            "$id": "#userUpdate",
+            "title": "User Update",
+            "description": "Data a user can update",
+            "type": "object",
+            "properties": {
+                "email": {
+                    "$ref": "#/definitions/email"
+                },
+                "password": {
+                    "$ref": "#/definitions/password"
+                }
+            },
+            "additionalProperties": false
+        },
+        "userList": {
+            "$id": "#userList",
+            "title": "User List",
+            "description": "List of users",
+            "type": "array",
+            "items": {
+                "$ref": "#/definitions/userView"
+            }
+        },
+        "userSignIn": {
+            "$id": "#userSignIn",
+            "title": "User Sign In",
+            "description": "Data user receives after sign in",
+            "type": "object",
+            "properties": {
+                "id": {
+                    "$ref": "#/definitions/id"
+                },
+                "accessToken": {
+                    "$ref": "#/definitions/accessToken"
+                }
+            }
+        }
+    }
+}

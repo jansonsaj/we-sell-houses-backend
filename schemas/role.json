@@ -1,0 +1,24 @@
+{
+    "$id": "#role",
+    "$schema": "http://json-schema.org/draft-07/schema",
+    "definitions": {
+        "id": {
+            "type": "string",
+            "description": "Unique role identifier"
+        },
+        "role": {
+            "title": "Role",
+            "description": "Full role object",
+            "type": "object",
+            "properties": {
+                "id": {
+                    "$ref": "#/definitions/id"
+                },
+                "name": {
+                    "description": "Unique role name",
+                    "type": "string"
+                }
+            }
+        }
+    }
+}
