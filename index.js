@@ -1,14 +1,19 @@
+import './helpers/setup.js';
 import Koa from 'koa';
 import Router from 'koa-router';
-import db from './models/db.js';
+import bodyParser from 'koa-bodyparser';
+import {connect} from './models/db.js';
+import users from './routes/users.js';
 
 const port = process.env.PORT || 3000;
 
 const app = new Koa();
+app.use(bodyParser());
 const router = new Router();
 
 router.get('/api/v1', welcomeAPI);
 app.use(router.routes());
+app.use(users.routes());
 
 /**
  * The default route for testing purposes.
@@ -24,7 +29,7 @@ function welcomeAPI(ctx) {
  * Connect to the database and start the server.
  */
 async function start() {
-  await db.connect();
+  await connect();
   app.listen(port);
   console.log(`Listening on port: ${port}`);
 }
