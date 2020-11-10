@@ -54,7 +54,7 @@ test('User\'s can delete their own User', async (t) => {
 test('User\'s can\'t read their password', async (t) => {
   const user = userWithRole('id', Roles.USER);
   const ability = await defineAbilitiesFor(user);
-  t.false(user.accessibleFieldsBy(ability).includes('password'));
+  t.false(user.accessibleFieldsBy(ability, 'read').includes('password'));
 });
 
 test('User\'s can\'t read other users', async (t) => {
@@ -99,3 +99,26 @@ test('Admins can delete all users', async (t) => {
   t.true(ability.can('delete', otherUser));
 });
 
+test('User\'s can update their password', async (t) => {
+  const user = userWithRole('id', Roles.USER);
+  const ability = await defineAbilitiesFor(user);
+  t.true(user.accessibleFieldsBy(ability, 'update').includes('password'));
+});
+
+test('User\'s can update their email', async (t) => {
+  const user = userWithRole('id', Roles.USER);
+  const ability = await defineAbilitiesFor(user);
+  t.true(user.accessibleFieldsBy(ability, 'update').includes('email'));
+});
+
+test('User\'s can\'t update their id', async (t) => {
+  const user = userWithRole('id', Roles.USER);
+  const ability = await defineAbilitiesFor(user);
+  t.false(user.accessibleFieldsBy(ability, 'update').includes('id'));
+});
+
+test('User\'s can\'t update their roles', async (t) => {
+  const user = userWithRole('id', Roles.USER);
+  const ability = await defineAbilitiesFor(user);
+  t.false(user.accessibleFieldsBy(ability, 'update').includes('roles'));
+});

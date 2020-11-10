@@ -16,7 +16,7 @@ export const defineAbilitiesFor = async (user) => {
 
   if (roleNames.includes(Roles.USER)) {
     can('read', User, ['id', 'email', 'roles'], {_id: user.id});
-    can('update', User, {_id: user.id});
+    can('update', User, ['email', 'password'], {_id: user.id});
     can('delete', User, {_id: user.id});
   }
   if (roleNames.includes(Roles.ADMIN)) {

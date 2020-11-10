@@ -5,7 +5,8 @@
   "type": "module",
   "main": "index.js",
   "scripts": {
-    "start": "node index.js",
+    "start": "node --experimental-json-modules index.js",
+    "nodemon": "nodemon --exec npm start",
     "test": "ava",
     "test:watch": "ava --watch",
     "lint": "eslint .",
@@ -21,6 +22,7 @@
     "@casl/ability": "^4.1.6",
     "@casl/mongoose": "^3.1.0",
     "bcrypt": "^5.0.0",
+    "jsonschema": "^1.4.0",
     "jsonwebtoken": "^8.5.1",
     "koa": "^2.13.0",
     "koa-bodyparser": "^4.3.0",
@@ -38,6 +40,9 @@
   "ava": {
     "files": [
       "test/**"
+    ],
+    "nodeArguments": [
+      "--experimental-json-modules"
     ]
   }
 }
