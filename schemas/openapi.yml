@@ -1,0 +1,163 @@
+openapi: 3.0.0
+info:
+  version: 1.0.0
+  title: Module 304CEM Project backend
+  description: JANSONSA - We sell houses (Backend)
+  contact:
+    name: Andris Jansons
+    email: jansonsa@coventry.ac.uk
+  license:
+    name: Apache 2.0
+    url: "https://www.apache.org/licenses/LICENSE-2.0.html"
+servers:
+  - url: https://cable-elastic-3000.codio-box.uk/
+    description: Development server
+tags:
+  - name: Users
+    description: API endpoints for user management
+paths:
+  /users:
+    post:
+      tags:
+        - Users
+      summary: Create a new user account
+      requestBody:
+        description: All new user data.
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: ./user.json#/definitions/userCreate
+      responses:
+        "201":
+          description: User created.
+          content:
+            application/json:
+              schema:
+                $ref: ./user.json#/definitions/userView
+        "403":
+          description: An account with that email address already exists.
+        "500":
+          description: Unable to create user due to an unexpected error.
+    get:
+      tags:
+        - Users
+      summary: Get a list of all users
+      description: >
+        Retrieve a list of all users.
+        Non-admins can only retrieve themselves.
+      responses:
+        "200":
+          description: List of users
+          content:
+            application/json:
+              schema:
+                $ref: ./user.json#/definitions/userList
+        "500":
+          description: Cannot get a list of all users.
+
+  /users/signin:
+    post:
+      tags:
+        - Users
+      summary: User sign in
+      description: >
+        This resource allows users to sign in to the system.
+        It returns an access token used to sign requests.
+      requestBody:
+        description: User object containing email and password.
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: ./user.json#/definitions/user
+      responses:
+        "200":
+          description: User signed in
+          content:
+            application/json:
+              schema:
+                $ref: ./user.json#/definitions/userSignIn
+        "400":
+          description: There is no user with the specified email address.
+        "401":
+          description: The password is invalid.
+        "500":
+          description: Cannot sign in.
+
+  /users/{id}:
+    parameters:
+      - in: path
+        name: id
+        schema:
+          type: string
+        required: true
+        description: Alphanumeric ID of the user.
+    get:
+      tags:
+        - Users
+      summary: Get user by ID
+      description: >
+        Retrieve user details by ID.
+        Non-admin users can only retrieve their own user.
+      responses:
+        "200":
+          description: Accessible fields from the user's record.
+          content:
+            application/json:
+              schema:
+                $ref: ./user.json#/definitions/userView
+        "404":
+          description: User with the provided ID does not exist.
+        "401":
+          description: Non-amin users can only view their own user record.
+        "500":
+          description: Cannot get user.
+    put:
+      tags:
+        - Users
+      summary: Update user details by ID
+      description: >
+        Update the specified user. Only updatable fields can be updated.
+      requestBody:
+        description: Update an updatable property or the password.
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: ./user.json#/definitions/userUpdate
+      responses:
+        "200":
+          description: Accessible fields from the updated user's record.
+          content:
+            application/json:
+              schema:
+                $ref: ./user.json#/definitions/userView
+        "404":
+          description: User with the provided ID does not exist.
+        "401":
+          description: Non-amin users can only update their own user record.
+        "403":
+          description: Another account already exists with the specified email address.
+        "500":
+          description: Cannot update user.
+    delete:
+      tags:
+        - Users
+      summary: Delete user by ID
+      description: >
+        Delete the specified user record.
+        Non-admins can only delete their own user records.
+      responses:
+        "200":
+          description: Accessible fields from the deleted user's record.
+          content:
+            application/json:
+              schema:
+                $ref: ./user.json#/definitions/userView
+        "404":
+          description: User with the provided ID does not exist.
+        "401":
+          description: Non-amin users can only delete their own user record.
+        "500":
+          description: Cannot delete user.

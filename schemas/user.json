@@ -13,7 +13,7 @@
         "roles": {
             "type": "array",
             "items": {
-                "$ref": "#role/definitions/id"
+                "$ref": "./role.json#/definitions/id"
             }
         },
         "password": {
@@ -39,6 +39,22 @@
                 },
                 "roles": {
                     "$ref": "#/definitions/roles"
+                },
+                "password": {
+                    "$ref": "#/definitions/password"
+                }
+            },
+            "required": ["email", "password"],
+            "additionalProperties": false
+        },
+        "userCreate": {
+            "$id": "#userCreate",
+            "title": "User Create",
+            "description": "Data necessary to create user",
+            "type": "object",
+            "properties": {
+                "email": {
+                    "$ref": "#/definitions/email"
                 },
                 "password": {
                     "$ref": "#/definitions/password"
