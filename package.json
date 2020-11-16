@@ -27,9 +27,12 @@
     "koa": "^2.13.0",
     "koa-bodyparser": "^4.3.0",
     "koa-compose": "^4.1.0",
+    "koa-mount": "^4.0.0",
     "koa-router": "^9.4.0",
+    "koa-static": "^5.0.0",
     "lodash": "^4.17.20",
-    "mongoose": "^5.10.8"
+    "mongoose": "^5.10.8",
+    "redoc": "^2.0.0-rc.45"
   },
   "devDependencies": {
     "ava": "^3.13.0",

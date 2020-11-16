@@ -43,7 +43,7 @@ async function getUser(ctx) {
     const user = await User.findById(id).exec();
 
     if (!user) {
-      ctx.status = 400;
+      ctx.status = 404;
       ctx.body = 'The requested user does not exist';
       return;
     }
@@ -136,7 +136,7 @@ async function updateUser(ctx) {
     const user = await User.findById(id).exec();
 
     if (!user) {
-      ctx.status = 400;
+      ctx.status = 404;
       ctx.body = 'The requested user does not exist';
       return;
     }
@@ -157,7 +157,7 @@ async function updateUser(ctx) {
     Object.assign(user, updateUser);
     await user.save();
 
-    ctx.body = user;
+    ctx.body = pick(user, user.accessibleFieldsBy(ability, 'read'));
     ctx.status = 200;
   } catch (err) {
     if (err.code === ErrorCodes.DUPLICATE_KEY) {
@@ -181,7 +181,7 @@ async function deleteUser(ctx) {
     const user = await User.findById(id).exec();
 
     if (!user) {
-      ctx.status = 400;
+      ctx.status = 404;
       ctx.body = 'The requested user does not exist';
       return;
     }
