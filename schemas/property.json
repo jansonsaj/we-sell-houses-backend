@@ -51,6 +51,18 @@
             "type": "number",
             "minimum": 0
         },
+        "location": {
+            "description": "Property location",
+            "type": "object",
+            "properties": {
+                "addressLine1": {"type": "string", "maxLength": 255},
+                "addressLine2": {"type": "string", "maxLength": 255},
+                "town": {"type": "string", "maxLength": 35},
+                "county": {"type": "string", "maxLength": 35},
+                "postcode": {"type": "string", "maxLength": 8}
+            },
+            "required": ["addressLine1", "town", "postcode"]
+        },
         "property": {
             "title": "Property",
             "description": "Full property object",
@@ -64,7 +76,8 @@
                 "status": { "$ref": "property.json#/definitions/status" },
                 "features": { "$ref": "property.json#/definitions/features" },
                 "priority": { "$ref": "property.json#/definitions/priority" },
-                "price": { "$ref": "property.json#/definitions/price" }
+                "price": { "$ref": "property.json#/definitions/price" },
+                "location": { "$ref": "property.json#/definitions/location" }
             },
             "required": ["title", "ownerId", "type"],
             "additionalProperties": false

@@ -15,6 +15,13 @@ function sampleProperty() {
     type: 'flat',
     features: ['has garden'],
     price: 100.00,
+    location: {
+      addressLine1: 'address line 1',
+      addressLine2: 'address line 2',
+      town: 'town',
+      county: 'county',
+      postcode: 'postcode',
+    },
   });
 }
 

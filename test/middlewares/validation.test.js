@@ -301,3 +301,29 @@ test('validateProperty() with negative price doesn\'t call next', async (t) => {
   t.is(ctx.body.message, 'must be greater than or equal to 0');
   t.true(next.notCalled);
 });
+
+test('validateProperty() with incomplete location doesn\'t call next',
+    async (t) => {
+      const ctx = {
+        request: {
+          body: {
+            title: 'title',
+            description: 'description',
+            ownerId: '123',
+            type: 'flat',
+            features: ['has garden'],
+            price: 100.00,
+            location: {
+              postcode: 'AB12 3CD',
+            },
+          },
+        },
+      };
+      const next = sinon.stub();
+
+      await validateProperty(ctx, next);
+
+      t.is(ctx.status, 400);
+      t.is(ctx.body.message, 'requires property "addressLine1"');
+      t.true(next.notCalled);
+    });
