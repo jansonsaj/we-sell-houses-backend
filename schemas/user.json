@@ -1,4 +1,5 @@
 {
+    "$id": "user.json",
     "$schema": "http://json-schema.org/draft-07/schema#",
     "definitions": {
         "id": {
@@ -13,7 +14,7 @@
         "roles": {
             "type": "array",
             "items": {
-                "$ref": "./role.json#/definitions/id"
+                "$ref": "role.json#/definitions/id"
             }
         },
         "password": {
@@ -32,16 +33,16 @@
             "type": "object",
             "properties": {
                 "id": {
-                    "$ref": "#/definitions/id"
+                    "$ref": "user.json#/definitions/id"
                 },
                 "email": {
-                    "$ref": "#/definitions/email"
+                    "$ref": "user.json#/definitions/email"
                 },
                 "roles": {
-                    "$ref": "#/definitions/roles"
+                    "$ref": "user.json#/definitions/roles"
                 },
                 "password": {
-                    "$ref": "#/definitions/password"
+                    "$ref": "user.json#/definitions/password"
                 }
             },
             "required": ["email", "password"],
@@ -54,10 +55,10 @@
             "type": "object",
             "properties": {
                 "email": {
-                    "$ref": "#/definitions/email"
+                    "$ref": "user.json#/definitions/email"
                 },
                 "password": {
-                    "$ref": "#/definitions/password"
+                    "$ref": "user.json#/definitions/password"
                 }
             },
             "required": ["email", "password"],
@@ -70,13 +71,13 @@
             "type": "object",
             "properties": {
                 "id": {
-                    "$ref": "#/definitions/id"
+                    "$ref": "user.json#/definitions/id"
                 },
                 "email": {
-                    "$ref": "#/definitions/email"
+                    "$ref": "user.json#/definitions/email"
                 },
                 "roles": {
-                    "$ref": "#/definitions/roles"
+                    "$ref": "user.json#/definitions/roles"
                 }
             }
         },
@@ -87,10 +88,10 @@
             "type": "object",
             "properties": {
                 "email": {
-                    "$ref": "#/definitions/email"
+                    "$ref": "user.json#/definitions/email"
                 },
                 "password": {
-                    "$ref": "#/definitions/password"
+                    "$ref": "user.json#/definitions/password"
                 }
             },
             "additionalProperties": false
@@ -101,7 +102,7 @@
             "description": "List of users",
             "type": "array",
             "items": {
-                "$ref": "#/definitions/userView"
+                "$ref": "user.json#/definitions/userView"
             }
         },
         "userSignIn": {
@@ -111,10 +112,10 @@
             "type": "object",
             "properties": {
                 "id": {
-                    "$ref": "#/definitions/id"
+                    "$ref": "user.json#/definitions/id"
                 },
                 "accessToken": {
-                    "$ref": "#/definitions/accessToken"
+                    "$ref": "user.json#/definitions/accessToken"
                 }
             }
         }
