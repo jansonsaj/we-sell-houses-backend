@@ -4,6 +4,7 @@ import sinon from 'sinon';
 import '../../helpers/setup.js';
 import {defineAbilitiesFor} from '../../permissions/users.js';
 import User from '../../models/user.js';
+import Property from '../../models/property.js';
 import Roles from '../../config/roles.js';
 
 /**
@@ -12,12 +13,14 @@ import Roles from '../../config/roles.js';
  * @return {User} sample user
  */
 function userWithId(id) {
-  return new User({
-    id: id,
+  const user = new User({
     email: 'email@email.com',
     password: 'password',
     roles: [],
   });
+  sinon.stub(user, 'id').get(() => id);
+  sinon.stub(user, '_id').get(() => id);
+  return user;
 }
 /**
  * A sample user with a role to be used for testing
@@ -31,6 +34,30 @@ function userWithRole(id, roleName) {
     {name: roleName},
   ]);
   return user;
+}
+
+/**
+ * A sample property with specific owner id
+ * @param {string} ownerId Property owner's user id
+ * @return {Property} sample property
+ */
+function propertyWithOwnerId(ownerId) {
+  const property = new Property({
+    title: 'title',
+    description: 'description',
+    type: 'flat',
+    features: ['has garden'],
+    price: 100.00,
+    location: {
+      addressLine1: 'address line 1',
+      addressLine2: 'address line 2',
+      town: 'town',
+      county: 'county',
+      postcode: 'postcode',
+    },
+  });
+  sinon.stub(property, 'ownerId').get(() => ownerId);
+  return property;
 }
 
 test('User\'s can read their own User', async (t) => {
@@ -121,4 +148,90 @@ test('User\'s can\'t update their roles', async (t) => {
   const user = userWithRole('id', Roles.USER);
   const ability = await defineAbilitiesFor(user);
   t.false(user.accessibleFieldsBy(ability, 'update').includes('roles'));
+});
+
+test('Admins can read all properties', async (t) => {
+  const admin = userWithRole('id', Roles.ADMIN);
+  const ability = await defineAbilitiesFor(admin);
+  const property = propertyWithOwnerId('other-id');
+  t.true(ability.can('read', property));
+});
+
+test('Admins can update all properties', async (t) => {
+  const admin = userWithRole('id', Roles.ADMIN);
+  const ability = await defineAbilitiesFor(admin);
+  const property = propertyWithOwnerId('other-id');
+  t.true(ability.can('update', property));
+});
+
+test('Admins can delete all properties', async (t) => {
+  const admin = userWithRole('id', Roles.ADMIN);
+  const ability = await defineAbilitiesFor(admin);
+  const property = propertyWithOwnerId('other-id');
+  t.true(ability.can('delete', property));
+});
+
+test('Users can read other properties', async (t) => {
+  const user = userWithRole('id', Roles.USER);
+  const ability = await defineAbilitiesFor(user);
+  const property = propertyWithOwnerId('other-id');
+  t.true(ability.can('read', property));
+});
+
+test('Users cannot read other archived properties', async (t) => {
+  const user = userWithRole('id', Roles.USER);
+  const ability = await defineAbilitiesFor(user);
+  const property = propertyWithOwnerId('other-id');
+  property.status = 'archived';
+  t.true(ability.cannot('read', property));
+});
+
+test('Users can read their archived properties', async (t) => {
+  const user = userWithRole('id', Roles.USER);
+  const ability = await defineAbilitiesFor(user);
+  const property = propertyWithOwnerId('id');
+  property.status = 'archived';
+  t.true(ability.can('read', property));
+});
+
+test('Users can update their properties', async (t) => {
+  const user = userWithRole('id', Roles.USER);
+  const ability = await defineAbilitiesFor(user);
+  const property = propertyWithOwnerId('id');
+  t.true(ability.can('update', property));
+});
+
+test('Users cannot update other properties', async (t) => {
+  const user = userWithRole('id', Roles.USER);
+  const ability = await defineAbilitiesFor(user);
+  const property = propertyWithOwnerId('other-id');
+  t.true(ability.cannot('update', property));
+});
+
+test('Users can delete their properties', async (t) => {
+  const user = userWithRole('id', Roles.USER);
+  const ability = await defineAbilitiesFor(user);
+  const property = propertyWithOwnerId('id');
+  t.true(ability.can('delete', property));
+});
+
+test('Users cannot delete other properties', async (t) => {
+  const user = userWithRole('id', Roles.USER);
+  const ability = await defineAbilitiesFor(user);
+  const property = propertyWithOwnerId('other-id');
+  t.true(ability.cannot('delete', property));
+});
+
+test('Users can read their property location', async (t) => {
+  const user = userWithRole('id', Roles.USER);
+  const ability = await defineAbilitiesFor(user);
+  const property = propertyWithOwnerId('id');
+  t.true(property.accessibleFieldsBy(ability, 'read').includes('location'));
+});
+
+test('Users cannot read other property location', async (t) => {
+  const user = userWithRole('id', Roles.USER);
+  const ability = await defineAbilitiesFor(user);
+  const property = propertyWithOwnerId('other-id');
+  t.false(property.accessibleFieldsBy(ability, 'read').includes('location'));
 });
