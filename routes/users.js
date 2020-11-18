@@ -1,3 +1,9 @@
+/**
+ * A module that specifies all routes on /users path
+ * @module routes/users
+ * @author Andris Jansons
+ */
+
 import Router from 'koa-router';
 import pick from 'lodash/pick.js';
 import {
@@ -9,8 +15,8 @@ import auth from '../middlewares/auth.js';
 import {defineAbilitiesFor} from '../permissions/users.js';
 import Roles from '../config/roles.js';
 import ErrorCodes from '../helpers/error-codes.js';
-import User from '../models/user.model.js';
-import Role from '../models/role.model.js';
+import User from '../models/user.js';
+import Role from '../models/role.js';
 import {validateUser, validateUserUpdate} from '../middlewares/validation.js';
 
 const router = new Router({prefix: '/users'});

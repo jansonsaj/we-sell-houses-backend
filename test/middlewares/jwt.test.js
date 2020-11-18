@@ -2,7 +2,7 @@ import test from 'ava';
 import sinon from 'sinon';
 import jwt from 'jsonwebtoken';
 import {verifyToken, extractCallingUser} from '../../middlewares/jwt.js';
-import User from '../../models/user.model.js';
+import User from '../../models/user.js';
 
 test.afterEach(() => {
   sinon.restore();

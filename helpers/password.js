@@ -1,3 +1,9 @@
+/**
+ * A module to encrypt and compare passwords and create create tokens
+ * @module helpers/password
+ * @author Andris Jansons
+ */
+
 import bcrypt from 'bcrypt';
 import jwt from 'jsonwebtoken';
 import AuthConfig from '../config/auth.js';

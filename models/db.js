@@ -1,7 +1,14 @@
+/**
+ * A module to establish connection with the MongoDB database
+ * and insert all the necessary default values
+ * @module models/db
+ * @author Andris Jansons
+ */
+
 import mongoose from 'mongoose';
 import DB_CONFIG from '../config/db.js';
 import ROLES from '../config/roles.js';
-import Role from './role.model.js';
+import Role from './role.js';
 
 /**
  * Establish a connection with the MongoDB.

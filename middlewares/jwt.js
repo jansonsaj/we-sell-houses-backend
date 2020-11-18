@@ -1,6 +1,12 @@
+/**
+ * A module to provide auth using JSON Web Tokens
+ * @module middlewares/jwt
+ * @author Andris Jansons
+ */
+
 import jwt from 'jsonwebtoken';
 import AuthConfig from '../config/auth.js';
-import User from '../models/user.model.js';
+import User from '../models/user.js';
 
 const authorizationHeader = 'x-access-token';
 
