@@ -1,0 +1,73 @@
+{
+    "$id": "property.json",
+    "$schema": "http://json-schema.org/draft-07/schema#",
+    "definitions": {
+        "id": {
+            "type": "string",
+            "description": "Unique property identifier"
+        },
+        "title": {
+            "type": "string",
+            "description": "Property title"
+        },
+        "description": {
+            "type": "string",
+            "description": "Property description"
+        },
+        "ownerId": {
+            "$ref": "user.json#/definitions/id"
+        },
+        "type": {
+            "description": "Property type",
+            "enum": [
+                "commercial", "terrace", "endOfTerrace",
+                "flat", "detached", "semiDetached", "cottage",
+                "bungalow", "mansion"
+            ]
+        },
+        "status": {
+            "description": "Property listing status",
+            "enum": [
+                "listed", "underOffer", "archived"
+            ]
+        },
+        "features": {
+            "description": "Property list of features",
+            "type": "array",
+            "items": {
+                "type": "string"
+            },
+            "minItems": 1,
+            "uniqueItems": true
+        },
+        "priority": {
+            "description": "Property priority",
+            "enum": [
+                "normal", "high"
+            ]
+        },
+        "price": {
+            "description": "Property price in pounds",
+            "type": "number",
+            "minimum": 0
+        },
+        "property": {
+            "title": "Property",
+            "description": "Full property object",
+            "type": "object",
+            "properties": {
+                "id": { "$ref": "property.json#/definitions/id" },
+                "title": { "$ref": "property.json#/definitions/title" },
+                "description": { "$ref": "property.json#/definitions/description" },
+                "ownerId": { "$ref": "property.json#/definitions/ownerId" },
+                "type": { "$ref": "property.json#/definitions/type" },
+                "status": { "$ref": "property.json#/definitions/status" },
+                "features": { "$ref": "property.json#/definitions/features" },
+                "priority": { "$ref": "property.json#/definitions/priority" },
+                "price": { "$ref": "property.json#/definitions/price" }
+            },
+            "required": ["title", "ownerId", "type"],
+            "additionalProperties": false
+        }
+    }
+}

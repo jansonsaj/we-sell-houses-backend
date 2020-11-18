@@ -4,6 +4,7 @@ import {
   validateUser,
   validateUserCreate,
   validateUserUpdate,
+  validateProperty,
 } from '../../middlewares/validation.js';
 
 test('validateUser() with valid user calls next', async (t) => {
@@ -233,3 +234,70 @@ test('validateUserCreate() with missing parameters doesn\'t call next',
 
       t.true(next.notCalled);
     });
+
+test('validateProperty() with valid property calls next', async (t) => {
+  const ctx = {
+    request: {
+      body: {
+        title: 'title',
+        description: 'description',
+        ownerId: '123',
+        type: 'flat',
+        features: ['has garden'],
+        price: 100.00,
+      },
+    },
+  };
+  const next = sinon.stub();
+
+  await validateProperty(ctx, next);
+
+  t.true(next.called);
+});
+
+['title', 'ownerId', 'type'].forEach((requiredProperty) => {
+  test(`validateProperty() without ${requiredProperty} doesn't call next`,
+      async (t) => {
+        const ctx = {
+          request: {
+            body: {
+              title: 'title',
+              description: 'description',
+              ownerId: '123',
+              type: 'flat',
+              features: ['has garden'],
+              price: 100.00,
+            },
+          },
+        };
+        const next = sinon.stub();
+
+        delete ctx.request.body[requiredProperty];
+
+        await validateProperty(ctx, next);
+
+        t.true(next.notCalled);
+      });
+});
+
+test('validateProperty() with negative price doesn\'t call next', async (t) => {
+  const ctx = {
+    request: {
+      body: {
+        title: 'title',
+        description: 'description',
+        ownerId: '123',
+        type: 'flat',
+        features: ['has garden'],
+        price: -100.00,
+      },
+    },
+  };
+  const next = sinon.stub();
+
+  await validateProperty(ctx, next);
+
+  t.is(ctx.status, 400);
+  t.is(ctx.body.message, 'must be greater than or equal to 0');
+  t.true(next.notCalled);
+});
