@@ -2,6 +2,7 @@ import test from 'ava';
 import sinon from 'sinon';
 import {
   validateUser,
+  validateUserCreate,
   validateUserUpdate,
 } from '../../middlewares/validation.js';
 
@@ -143,3 +144,92 @@ test('validateUserUpdate() with missing parameters calls next', async (t) => {
 
   t.true(next.called);
 });
+
+
+test('validateUserCreate() with valid user calls next', async (t) => {
+  const ctx = {
+    request: {
+      body: {
+        email: 'email@email.com',
+        password: 'password',
+        signUpCode: 'code',
+      },
+    },
+  };
+  const next = sinon.stub();
+
+  await validateUserCreate(ctx, next);
+
+  t.true(next.called);
+});
+
+test('validateUserCreate() with invalid user email doesn\'t call next',
+    async (t) => {
+      const ctx = {
+        request: {
+          body: {
+            email: 'not-valid-email.com',
+            password: 'password',
+            signUpCode: 'code',
+          },
+        },
+      };
+      const next = sinon.stub();
+
+      await validateUserCreate(ctx, next);
+
+      t.is(ctx.status, 400);
+      t.is(ctx.body.argument, 'email');
+      t.true(next.notCalled);
+    });
+
+test('validateUserCreate() with invalid password doesn\'t call next',
+    async (t) => {
+      const ctx = {
+        request: {
+          body: {
+            email: 'email@email.com',
+            password: '123',
+            signUpCode: 'code',
+          },
+        },
+      };
+      const next = sinon.stub();
+
+      await validateUserCreate(ctx, next);
+
+      t.is(ctx.status, 400);
+      t.is(ctx.body.message, 'does not meet minimum length of 6');
+      t.true(next.notCalled);
+    });
+
+test('validateUserCreate() with missing signUpCode doesn\'t call next',
+    async (t) => {
+      const ctx = {
+        request: {
+          body: {
+            email: 'email@email.com',
+            password: '123',
+          },
+        },
+      };
+      const next = sinon.stub();
+
+      await validateUserCreate(ctx, next);
+
+      t.true(next.notCalled);
+    });
+
+test('validateUserCreate() with missing parameters doesn\'t call next',
+    async (t) => {
+      const ctx = {
+        request: {
+          body: {},
+        },
+      };
+      const next = sinon.stub();
+
+      await validateUserCreate(ctx, next);
+
+      t.true(next.notCalled);
+    });

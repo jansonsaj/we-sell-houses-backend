@@ -17,11 +17,16 @@ import Roles from '../config/roles.js';
 import ErrorCodes from '../helpers/error-codes.js';
 import User from '../models/user.js';
 import Role from '../models/role.js';
-import {validateUser, validateUserUpdate} from '../middlewares/validation.js';
+import {
+  validateUser,
+  validateUserCreate,
+  validateUserUpdate,
+} from '../middlewares/validation.js';
+import {isValidSignUpCode} from '../helpers/sign-up-codes.js';
 
 const router = new Router({prefix: '/users'});
 
-router.post('/', validateUser, createUser);
+router.post('/', validateUserCreate, createUser);
 router.post('/signin', validateUser, signIn);
 router.get('/', auth, getAll);
 router.get('/:id', auth, getUser);
@@ -107,6 +112,13 @@ async function signIn(ctx) {
 async function createUser(ctx) {
   try {
     const body = ctx.request.body;
+
+    if (!isValidSignUpCode(body.signUpCode)) {
+      ctx.status = 403;
+      ctx.body = 'The provided sign-up code is invalid.';
+      return;
+    }
+
     const hashedPassword = await hashPassword(body.password);
     const role = await Role.findOne({name: Roles.USER}).exec();
 

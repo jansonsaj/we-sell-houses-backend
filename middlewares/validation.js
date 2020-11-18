@@ -9,7 +9,7 @@ import JsonSchema from 'jsonschema';
 import userSchema from '../schemas/user.json';
 import roleSchema from '../schemas/role.json';
 
-const {user, userUpdate} = userSchema.definitions;
+const {user, userCreate, userUpdate} = userSchema.definitions;
 
 const validator = new JsonSchema.Validator();
 validator.addSchema(userSchema);
@@ -42,7 +42,9 @@ function makeValidator(schema, resource) {
   };
 }
 
-/** Validate data against user schema for creating user */
+/** Validate data against user schema */
 export const validateUser = makeValidator(user, 'user');
+/** Validate data against user schema for creating user */
+export const validateUserCreate = makeValidator(userCreate, 'userCreate');
 /** Validate data against user schema for updating user */
 export const validateUserUpdate = makeValidator(userUpdate, 'userUpdate');

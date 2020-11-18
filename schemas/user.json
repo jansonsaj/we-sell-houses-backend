@@ -26,6 +26,10 @@
             "description": "User's JWT access token",
             "type": "string"
         },
+        "signUpCode": {
+            "description": "User's sign-up code",
+            "type": "string"
+        },
         "user": {
             "$id": "#user",
             "title": "User",
@@ -59,9 +63,12 @@
                 },
                 "password": {
                     "$ref": "user.json#/definitions/password"
+                },
+                "signUpCode": {
+                    "$ref": "user.json#/definitions/signUpCode"
                 }
             },
-            "required": ["email", "password"],
+            "required": ["email", "password", "signUpCode"],
             "additionalProperties": false
         },
         "userView": {
