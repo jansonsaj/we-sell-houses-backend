@@ -46,6 +46,34 @@ const PropertySchema = new mongoose.Schema({
     get: getPrice,
     set: setPrice,
   },
+  location: {
+    type: {
+      addressLine1: {
+        type: String,
+        required: true,
+        maxlength: 255,
+      },
+      addressLine2: {
+        type: String,
+        maxlength: 255,
+      },
+      town: {
+        type: String,
+        required: true,
+        maxlength: 35,
+      },
+      county: {
+        type: String,
+        maxlength: 35,
+      },
+      postcode: {
+        type: String,
+        required: true,
+        maxlength: 8,
+      },
+    },
+    required: false,
+  },
 });
 
 /**
