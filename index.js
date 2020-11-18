@@ -1,3 +1,10 @@
+/**
+ * A module that is the entrypoint in the application.
+ * Serves all API routes
+ * @module index
+ * @author Andris Jansons
+ */
+
 import './helpers/setup.js';
 import './docs.js';
 import Koa from 'koa';
@@ -12,19 +19,8 @@ const app = new Koa();
 app.use(bodyParser());
 const router = new Router();
 
-router.get('/api/v1', welcomeAPI);
 app.use(router.routes());
 app.use(users.routes());
-
-/**
- * The default route for testing purposes.
- * @param {Context} ctx Koa context
- */
-function welcomeAPI(ctx) {
-  ctx.body = {
-    message: 'Welcome to the API!',
-  };
-}
 
 /**
  * Connect to the database and start the server.

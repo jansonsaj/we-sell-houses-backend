@@ -1,6 +1,12 @@
+/**
+ * A module that defines role based access policies for users
+ * @module permissions/users
+ * @author Andris Jansons
+ */
+
 import casl from '@casl/ability';
 import Roles from '../config/roles.js';
-import User from '../models/user.model.js';
+import User from '../models/user.js';
 
 const {Ability, AbilityBuilder} = casl;
 

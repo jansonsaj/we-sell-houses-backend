@@ -1,3 +1,10 @@
+/**
+ * A module to run JSON Schema based validation on request/response data
+ * @module middlewares/validation
+ * @author Andris Jansons
+ * @see schemas/* for JSON Schema definition files
+ */
+
 import JsonSchema from 'jsonschema';
 import userSchema from '../schemas/user.json';
 import roleSchema from '../schemas/role.json';

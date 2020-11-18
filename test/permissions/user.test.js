@@ -3,7 +3,7 @@ import sinon from 'sinon';
 // Required to apply accessibleFieldsBy() plugin
 import '../../helpers/setup.js';
 import {defineAbilitiesFor} from '../../permissions/users.js';
-import User from '../../models/user.model.js';
+import User from '../../models/user.js';
 import Roles from '../../config/roles.js';
 
 /**

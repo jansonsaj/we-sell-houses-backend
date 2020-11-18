@@ -1,7 +1,7 @@
 import test from 'ava';
 import sinon from 'sinon';
-import User from '../../models/user.model.js';
-import Role from '../../models/role.model.js';
+import User from '../../models/user.js';
+import Role from '../../models/role.js';
 
 /**
  * A sample user to be used for testing

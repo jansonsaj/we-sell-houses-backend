@@ -13,4 +13,5 @@ module.exports = {
   },
   'rules': {
   },
+  'ignorePatterns': ['docs'],
 };
