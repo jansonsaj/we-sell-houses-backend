@@ -51,6 +51,11 @@
             "type": "number",
             "minimum": 0
         },
+        "stringNumber": {
+            "description": "Non-negative number as string",
+            "type": "string",
+            "pattern": "^\\d+$"
+        },
         "location": {
             "description": "Property location",
             "type": "object",
@@ -62,6 +67,21 @@
                 "postcode": {"type": "string", "maxLength": 8}
             },
             "required": ["addressLine1", "town", "postcode"]
+        },
+        "search": {
+            "type": "string",
+            "description": "A phrase to search for"
+        },
+        "sort": {
+            "type": "string",
+            "description": "A property to sort by"
+        },
+        "sortDirection": {
+            "type": "string",
+            "description": "Sorting direction",
+            "enum": [
+                "asc", "desc"
+            ]
         },
         "property": {
             "title": "Property",
@@ -80,6 +100,61 @@
                 "location": { "$ref": "property.json#/definitions/location" }
             },
             "required": ["title", "ownerId", "type"],
+            "additionalProperties": false
+        },
+        "propertyCreate": {
+            "title": "Property Create",
+            "description": "Property object for creating a new property",
+            "type": "object",
+            "properties": {
+                "title": { "$ref": "property.json#/definitions/title" },
+                "description": { "$ref": "property.json#/definitions/description" },
+                "type": { "$ref": "property.json#/definitions/type" },
+                "status": { "$ref": "property.json#/definitions/status" },
+                "features": { "$ref": "property.json#/definitions/features" },
+                "priority": { "$ref": "property.json#/definitions/priority" },
+                "price": { "$ref": "property.json#/definitions/price" },
+                "location": { "$ref": "property.json#/definitions/location" }
+            },
+            "required": ["title", "type"],
+            "additionalProperties": false
+        },
+        "propertyUpdate": {
+            "title": "Property Update",
+            "description": "Property object for updating an existing property",
+            "type": "object",
+            "properties": {
+                "title": { "$ref": "property.json#/definitions/title" },
+                "description": { "$ref": "property.json#/definitions/description" },
+                "type": { "$ref": "property.json#/definitions/type" },
+                "status": { "$ref": "property.json#/definitions/status" },
+                "features": { "$ref": "property.json#/definitions/features" },
+                "priority": { "$ref": "property.json#/definitions/priority" },
+                "price": { "$ref": "property.json#/definitions/price" },
+                "location": { "$ref": "property.json#/definitions/location" }
+            },
+            "additionalProperties": false
+        },
+        "propertyList": {
+            "title": "Property List",
+            "description": "Query parameters for filtering, sorting and paginating properties",
+            "type": "object",
+            "properties": {
+                "page": { "$ref": "property.json#/definitions/stringNumber" },
+                "resultsPerPage": { "$ref": "property.json#/definitions/stringNumber" },
+                "sort": { "$ref": "property.json#/definitions/sort" },
+                "sortDirection": { "$ref": "property.json#/definitions/sortDirection" },
+                "search": { "$ref": "property.json#/definitions/search" },
+                "ownerId": { "$ref": "property.json#/definitions/ownerId" },
+                "type": { "$ref": "property.json#/definitions/type" },
+                "status": { "$ref": "property.json#/definitions/status" },
+                "priority": { "$ref": "property.json#/definitions/priority" },
+                "priceLow": { "$ref": "property.json#/definitions/stringNumber" },
+                "priceHigh": { "$ref": "property.json#/definitions/stringNumber" },
+                "town": { "$ref": "property.json#/definitions/location/properties/town" },
+                "county": { "$ref": "property.json#/definitions/location/properties/county" },
+                "postcode": { "$ref": "property.json#/definitions/location/properties/postcode" }
+            },
             "additionalProperties": false
         }
     }

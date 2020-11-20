@@ -11,7 +11,7 @@ import {
   comparePasswords,
   createToken,
 } from '../helpers/password.js';
-import auth from '../middlewares/auth.js';
+import {auth} from '../middlewares/auth.js';
 import {defineAbilitiesFor} from '../permissions/users.js';
 import Roles from '../config/roles.js';
 import ErrorCodes from '../helpers/error-codes.js';
