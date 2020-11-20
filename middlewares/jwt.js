@@ -11,6 +11,20 @@ import User from '../models/user.js';
 const authorizationHeader = 'x-access-token';
 
 /**
+ * If authorization header is not present, allow guest access.
+ * @param {Context} ctx Koa Context
+ * @param {Next} next Koa Next
+ */
+export async function allowGuest(ctx, next) {
+  if (ctx.get(authorizationHeader)) {
+    await next();
+  } else {
+    ctx.state.guest = true;
+    await next();
+  }
+}
+
+/**
  * Verifies the user's token and stores the user's id
  * in ctx.state.userId. If the token is invalid or expired,
  * returns status 401 (Unauthorized).
@@ -19,6 +33,10 @@ const authorizationHeader = 'x-access-token';
  */
 export async function verifyToken(ctx, next) {
   try {
+    if (ctx.state?.guest) {
+      await next();
+      return;
+    }
     const token = ctx.get(authorizationHeader);
     if (!token) {
       ctx.status = 400;
@@ -43,6 +61,10 @@ export async function verifyToken(ctx, next) {
  */
 export async function extractCallingUser(ctx, next) {
   try {
+    if (ctx.state?.guest) {
+      await next();
+      return;
+    }
     const user = await User.findById(ctx.state.userId).exec();
     if (!user) {
       ctx.status = 401;
