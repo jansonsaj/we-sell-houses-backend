@@ -4,8 +4,56 @@ import {
   validateUser,
   validateUserCreate,
   validateUserUpdate,
-  validateProperty,
+  validatePropertyCreate,
+  validatePropertyUpdate,
+  validatePropertyList,
 } from '../../middlewares/validation.js';
+
+/**
+ * A sample property used in testing
+ * @return {object} Returns property obejct
+ */
+function sampleProperty() {
+  return {
+    title: 'title',
+    description: 'description',
+    type: 'flat',
+    features: ['has garden', 'integrated kitchen'],
+    status: 'listed',
+    priority: 'normal',
+    price: 100.00,
+    location: {
+      addressLine1: 'address line 1',
+      addressLine2: 'address line 2',
+      town: 'town',
+      county: 'county',
+      postcode: 'postcode',
+    },
+  };
+}
+
+/**
+ * A sample property used in testing
+ * @return {object} Returns property obejct
+ */
+function sampleListProperty() {
+  return {
+    page: '1',
+    resultsPerPage: '10',
+    sort: 'createdAt',
+    sortDirection: 'desc',
+    search: 'search phrase',
+    ownerId: '123',
+    type: 'flat',
+    status: 'listed',
+    priority: 'normal',
+    town: 'town',
+    county: 'county',
+    postcode: 'postcode',
+    priceLow: '1',
+    priceHigh: '100',
+  };
+}
 
 test('validateUser() with valid user calls next', async (t) => {
   const ctx = {
@@ -235,95 +283,138 @@ test('validateUserCreate() with missing parameters doesn\'t call next',
       t.true(next.notCalled);
     });
 
-test('validateProperty() with valid property calls next', async (t) => {
-  const ctx = {
-    request: {
-      body: {
-        title: 'title',
-        description: 'description',
-        ownerId: '123',
-        type: 'flat',
-        features: ['has garden'],
-        price: 100.00,
-      },
-    },
-  };
-  const next = sinon.stub();
-
-  await validateProperty(ctx, next);
-
-  t.true(next.called);
-});
-
-['title', 'ownerId', 'type'].forEach((requiredProperty) => {
-  test(`validateProperty() without ${requiredProperty} doesn't call next`,
+// Use the same test for all required parameters
+['title', 'type'].forEach((requiredProperty) => {
+  test(`validatePropertyCreate() without ${requiredProperty} doesn't call next`,
       async (t) => {
         const ctx = {
           request: {
-            body: {
-              title: 'title',
-              description: 'description',
-              ownerId: '123',
-              type: 'flat',
-              features: ['has garden'],
-              price: 100.00,
-            },
+            body: sampleProperty(),
           },
         };
         const next = sinon.stub();
 
         delete ctx.request.body[requiredProperty];
 
-        await validateProperty(ctx, next);
+        await validatePropertyCreate(ctx, next);
 
         t.true(next.notCalled);
       });
 });
 
-test('validateProperty() with negative price doesn\'t call next', async (t) => {
-  const ctx = {
-    request: {
-      body: {
-        title: 'title',
-        description: 'description',
-        ownerId: '123',
-        type: 'flat',
-        features: ['has garden'],
-        price: -100.00,
-      },
-    },
-  };
-  const next = sinon.stub();
+// Test the same test cases for validatePropertyCreate()
+// and validatePropertyUpdate() functions
+[
+  {name: 'validatePropertyCreate()', function: validatePropertyCreate},
+  {name: 'validatePropertyUpdate()', function: validatePropertyUpdate},
+].forEach((testCase) => {
+  test(`${testCase.name} with valid property calls next`,
+      async (t) => {
+        const ctx = {
+          request: {
+            body: sampleProperty(),
+          },
+        };
+        const next = sinon.stub();
 
-  await validateProperty(ctx, next);
+        await testCase.function(ctx, next);
 
-  t.is(ctx.status, 400);
-  t.is(ctx.body.message, 'must be greater than or equal to 0');
-  t.true(next.notCalled);
+        t.true(next.called);
+      });
+
+  test(`${testCase.name} with negative price doesn't call next`,
+      async (t) => {
+        const ctx = {
+          request: {
+            body: sampleProperty(),
+          },
+        };
+        ctx.request.body.price = -100;
+        const next = sinon.stub();
+
+        await testCase.function(ctx, next);
+
+        t.is(ctx.status, 400);
+        t.is(ctx.body.message, 'must be greater than or equal to 0');
+        t.true(next.notCalled);
+      });
+
+  test(`${testCase.name} with incomplete location doesn't call next`,
+      async (t) => {
+        const ctx = {
+          request: {
+            body: sampleProperty(),
+          },
+        };
+        delete ctx.request.body.location.addressLine1;
+        const next = sinon.stub();
+
+        await testCase.function(ctx, next);
+
+        t.is(ctx.status, 400);
+        t.is(ctx.body.message, 'requires property "addressLine1"');
+        t.true(next.notCalled);
+      });
 });
 
-test('validateProperty() with incomplete location doesn\'t call next',
+test(`validatePropertyList() with a valid request calls next`,
     async (t) => {
       const ctx = {
         request: {
-          body: {
-            title: 'title',
-            description: 'description',
-            ownerId: '123',
-            type: 'flat',
-            features: ['has garden'],
-            price: 100.00,
-            location: {
-              postcode: 'AB12 3CD',
-            },
-          },
+          query: sampleListProperty(),
         },
       };
       const next = sinon.stub();
 
-      await validateProperty(ctx, next);
+      await validatePropertyList(ctx, next);
+
+      t.true(next.called);
+    });
+
+test(`validatePropertyList() with a negative low price doesn't call next`,
+    async (t) => {
+      const ctx = {
+        request: {
+          query: sampleListProperty(),
+        },
+      };
+      ctx.request.query.priceLow = '-100';
+      const next = sinon.stub();
+
+      await validatePropertyList(ctx, next);
 
       t.is(ctx.status, 400);
-      t.is(ctx.body.message, 'requires property "addressLine1"');
+      t.is(ctx.body.property, 'instance.priceLow');
       t.true(next.notCalled);
+    });
+
+test(`validatePropertyList() with a negative high price doesn't call next`,
+    async (t) => {
+      const ctx = {
+        request: {
+          query: sampleListProperty(),
+        },
+      };
+      ctx.request.query.priceHigh = '-100';
+      const next = sinon.stub();
+
+      await validatePropertyList(ctx, next);
+
+      t.is(ctx.status, 400);
+      t.is(ctx.body.property, 'instance.priceHigh');
+      t.true(next.notCalled);
+    });
+
+test(`validatePropertyList() with no parameters calls next`,
+    async (t) => {
+      const ctx = {
+        request: {
+          query: {},
+        },
+      };
+      const next = sinon.stub();
+
+      await validatePropertyList(ctx, next);
+
+      t.true(next.called);
     });

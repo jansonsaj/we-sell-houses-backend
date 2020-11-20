@@ -8,15 +8,20 @@ import Router from 'koa-router';
 import pick from 'lodash/pick.js';
 import {guestOrAuth, auth} from '../middlewares/auth.js';
 import {defineAbilitiesFor} from '../permissions/users.js';
+import {
+  validatePropertyCreate,
+  validatePropertyUpdate,
+  validatePropertyList,
+} from '../middlewares/validation.js';
 import Property from '../models/property.js';
 import {propertySearchQuery} from '../helpers/query-builder.js';
 
 const router = new Router({prefix: '/properties'});
 
-router.get('/', guestOrAuth, getProperties);
-router.post('/', auth, createProperty);
+router.get('/', guestOrAuth, validatePropertyList, getProperties);
+router.post('/', auth, validatePropertyCreate, createProperty);
 router.get('/:id', guestOrAuth, getProperty);
-router.put('/:id', auth, updateProperty);
+router.put('/:id', auth, validatePropertyUpdate, updateProperty);
 router.del('/:id', auth, deleteProperty);
 
 /**

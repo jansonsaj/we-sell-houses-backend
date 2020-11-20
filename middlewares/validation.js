@@ -11,7 +11,11 @@ import roleSchema from '../schemas/role.json';
 import propertySchema from '../schemas/property.json';
 
 const {user, userCreate, userUpdate} = userSchema.definitions;
-const {property} = propertySchema.definitions;
+const {
+  propertyCreate,
+  propertyUpdate,
+  propertyList,
+} = propertySchema.definitions;
 
 const validator = new JsonSchema.Validator();
 validator.addSchema(userSchema);
@@ -22,11 +26,12 @@ validator.addSchema(propertySchema);
  * Wrapper that returns Koa middleware validator for a given schema
  * @param {object} schema JSON Schema definition
  * @param {string} resource Resource name
+ * @param {boolean} query Whether to validate against query parameters or body
  * @return {function} A koa middleware handler
  */
-function makeValidator(schema, resource) {
+function makeValidator(schema, resource, query = false) {
   return async (ctx, next) => {
-    const body = ctx.request.body;
+    const body = query ? ctx.request.query : ctx.request.body;
     const validationOptions = {
       throwError: true,
       propertyName: resource,
@@ -52,5 +57,12 @@ export const validateUserCreate = makeValidator(userCreate, 'userCreate');
 /** Validate data against user schema for updating user */
 export const validateUserUpdate = makeValidator(userUpdate, 'userUpdate');
 
-/** Validate data against property schema */
-export const validateProperty = makeValidator(property, 'property');
+/** Validate data against property schema for creating */
+export const validatePropertyCreate = makeValidator(
+    propertyCreate, 'propertyCreate');
+/** Validate data against property schema for updating */
+export const validatePropertyUpdate = makeValidator(
+    propertyUpdate, 'propertyUpdate');
+/** Validate data against property schema for listing */
+export const validatePropertyList = makeValidator(
+    propertyList, 'propertyList', true);
