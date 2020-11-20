@@ -222,16 +222,20 @@ test('Users cannot delete other properties', async (t) => {
   t.true(ability.cannot('delete', property));
 });
 
-test('Users can read their property location', async (t) => {
-  const user = userWithRole('id', Roles.USER);
-  const ability = await defineAbilitiesFor(user);
+test('Guests can read properties', async (t) => {
+  const ability = await defineAbilitiesFor(null);
   const property = propertyWithOwnerId('id');
-  t.true(property.accessibleFieldsBy(ability, 'read').includes('location'));
+  t.true(ability.can('read', property));
 });
 
-test('Users cannot read other property location', async (t) => {
-  const user = userWithRole('id', Roles.USER);
-  const ability = await defineAbilitiesFor(user);
-  const property = propertyWithOwnerId('other-id');
-  t.false(property.accessibleFieldsBy(ability, 'read').includes('location'));
+test('Guests cannot update properties', async (t) => {
+  const ability = await defineAbilitiesFor(null);
+  const property = propertyWithOwnerId('id');
+  t.true(ability.cannot('update', property));
+});
+
+test('Guests cannot delete properties', async (t) => {
+  const ability = await defineAbilitiesFor(null);
+  const property = propertyWithOwnerId('id');
+  t.true(ability.cannot('delete', property));
 });

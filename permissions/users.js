@@ -14,33 +14,48 @@ const {Ability, AbilityBuilder} = casl;
 /**
  * Get the Ability (permissions) that the
  * provided user has based on its roles.
- * @param {User} user User document
+ * @param {User | null} user User document or null for guests
  * @return {Ability} user's ability
  */
 export const defineAbilitiesFor = async (user) => {
-  const {can, cannot, rules} = new AbilityBuilder();
-  const roleNames = (await user.getRoles()).map((role) => role.name);
+  const {can, rules} = new AbilityBuilder();
 
-  if (roleNames.includes(Roles.USER)) {
-    can('read', User, ['id', 'email', 'roles'], {_id: user.id});
-    can('update', User, ['email', 'password'], {_id: user.id});
-    can('delete', User, {_id: user.id});
+  // Abilities for guests (users that haven't logged in)
+  can('read', Property, {status: {$ne: 'archived'}});
 
-    can('read', Property, {status: {$ne: 'archived'}});
-    can('read', Property, {ownerId: user.id});
-    cannot('read', Property, ['location'], {ownerId: {$ne: user.id}});
-    can('update', Property, {ownerId: user.id});
-    can('delete', Property, {ownerId: user.id});
-  }
-  if (roleNames.includes(Roles.ADMIN)) {
-    can('read', User);
-    can('update', User);
-    can('delete', User);
+  if (user) {
+    const userId = user.id;
+    const roleNames = await getRoleNames(user);
 
-    can('read', Property);
-    can('update', Property);
-    can('delete', Property);
+    if (roleNames.includes(Roles.USER)) {
+      can('read', User, ['id', 'email', 'roles'], {_id: userId});
+      can('update', User, ['email', 'password'], {_id: userId});
+      can('delete', User, {_id: userId});
+
+      can('read', Property, {ownerId: userId});
+      can('update', Property, {ownerId: userId});
+      can('delete', Property, {ownerId: userId});
+    }
+    if (roleNames.includes(Roles.ADMIN)) {
+      can('read', User);
+      can('update', User);
+      can('delete', User);
+
+      can('read', Property);
+      can('update', Property);
+      can('delete', Property);
+    }
   }
 
   return new Ability(rules);
 };
+
+/**
+ * Get a list of role names associated with the user
+ * @param {User} user user document
+ * @return {string[]} Returns a list of role names
+ */
+async function getRoleNames(user) {
+  return (await user.getRoles()).map((role) => role.name);
+}
+

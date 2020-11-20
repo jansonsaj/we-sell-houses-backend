@@ -6,7 +6,13 @@
  */
 
 import compose from 'koa-compose';
-import {verifyToken, extractCallingUser} from './jwt.js';
+import {allowGuest, verifyToken, extractCallingUser} from './jwt.js';
 
 /** Combines 2 middlewares: Verifies auth token and extracts calling user */
-export default compose([verifyToken, extractCallingUser]);
+export const auth = compose([verifyToken, extractCallingUser]);
+
+/** Allows guest access and authorizes users who provide
+ * an authorization token */
+export const guestOrAuth = compose(
+    [allowGuest, verifyToken, extractCallingUser],
+);
