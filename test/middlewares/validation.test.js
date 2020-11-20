@@ -6,7 +6,7 @@ import {
   validateUserUpdate,
   validatePropertyCreate,
   validatePropertyUpdate,
-  validatePropertyList,
+  validatePropertySearch,
 } from '../../middlewares/validation.js';
 
 /**
@@ -357,7 +357,7 @@ test('validateUserCreate() with missing parameters doesn\'t call next',
       });
 });
 
-test(`validatePropertyList() with a valid request calls next`,
+test(`validatePropertySearch() with a valid request calls next`,
     async (t) => {
       const ctx = {
         request: {
@@ -366,12 +366,12 @@ test(`validatePropertyList() with a valid request calls next`,
       };
       const next = sinon.stub();
 
-      await validatePropertyList(ctx, next);
+      await validatePropertySearch(ctx, next);
 
       t.true(next.called);
     });
 
-test(`validatePropertyList() with a negative low price doesn't call next`,
+test(`validatePropertySearch() with a negative low price doesn't call next`,
     async (t) => {
       const ctx = {
         request: {
@@ -381,14 +381,14 @@ test(`validatePropertyList() with a negative low price doesn't call next`,
       ctx.request.query.priceLow = '-100';
       const next = sinon.stub();
 
-      await validatePropertyList(ctx, next);
+      await validatePropertySearch(ctx, next);
 
       t.is(ctx.status, 400);
       t.is(ctx.body.property, 'instance.priceLow');
       t.true(next.notCalled);
     });
 
-test(`validatePropertyList() with a negative high price doesn't call next`,
+test(`validatePropertySearch() with a negative high price doesn't call next`,
     async (t) => {
       const ctx = {
         request: {
@@ -398,14 +398,14 @@ test(`validatePropertyList() with a negative high price doesn't call next`,
       ctx.request.query.priceHigh = '-100';
       const next = sinon.stub();
 
-      await validatePropertyList(ctx, next);
+      await validatePropertySearch(ctx, next);
 
       t.is(ctx.status, 400);
       t.is(ctx.body.property, 'instance.priceHigh');
       t.true(next.notCalled);
     });
 
-test(`validatePropertyList() with no parameters calls next`,
+test(`validatePropertySearch() with no parameters calls next`,
     async (t) => {
       const ctx = {
         request: {
@@ -414,7 +414,7 @@ test(`validatePropertyList() with no parameters calls next`,
       };
       const next = sinon.stub();
 
-      await validatePropertyList(ctx, next);
+      await validatePropertySearch(ctx, next);
 
       t.true(next.called);
     });
