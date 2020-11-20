@@ -7,6 +7,7 @@
 
 import mongoose from 'mongoose';
 import User from './user.js';
+import {penceToPounds, poundsToPence} from '../helpers/utils.js';
 
 export const Priorities = ['normal', 'high'];
 export const Statuses = ['listed', 'underOffer', 'archived'];
@@ -74,7 +75,7 @@ const PropertySchema = new mongoose.Schema({
     },
     required: false,
   },
-});
+}, {timestamps: true});
 
 /**
  * Custom price getter.
@@ -83,7 +84,7 @@ const PropertySchema = new mongoose.Schema({
  * @return {string} Returns the price as string with 2 decimal places
  */
 function getPrice(price) {
-  return (price / 100).toFixed(2);
+  return penceToPounds(price);
 }
 
 /**
@@ -93,7 +94,7 @@ function getPrice(price) {
  * @return {number} Returns the price in pence
  */
 function setPrice(price) {
-  return price * 100;
+  return poundsToPence(price);
 }
 
 /**

@@ -12,6 +12,7 @@ import Router from 'koa-router';
 import bodyParser from 'koa-bodyparser';
 import {connect} from './models/db.js';
 import users from './routes/users.js';
+import properties from './routes/properties.js';
 
 const port = process.env.PORT || 3000;
 
@@ -21,6 +22,7 @@ const router = new Router();
 
 app.use(router.routes());
 app.use(users.routes());
+app.use(properties.routes());
 
 /**
  * Connect to the database and start the server.
