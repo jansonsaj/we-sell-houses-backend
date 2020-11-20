@@ -15,6 +15,8 @@ servers:
 tags:
   - name: Users
     description: API endpoints for user management
+  - name: Properties
+    description: API endpoints for property management
 paths:
   /users:
     post:
@@ -161,3 +163,156 @@ paths:
           description: Non-amin users can only delete their own user record.
         "500":
           description: Cannot delete user.
+
+  /properties:
+    post:
+      tags:
+        - Properties
+      summary: Create a new property
+      requestBody:
+        description: New property data.
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: ./property.json#/definitions/propertyCreate
+      responses:
+        "201":
+          description: Property created.
+          content:
+            application/json:
+              schema:
+                $ref: ./property.json#/definitions/property
+        "500":
+          description: Unable to create property due to an unexpected error.
+    get:
+      tags:
+        - Properties
+      summary: Get a list properties
+      description: >
+        Retrieve a paginated list of properties.
+        Allows specifying results per page as well as a field to sort by and sort direction.
+        Supports filters by all fields.
+        Title, description and features fields are filtered using search parameter.
+      parameters:
+        - name: page
+          in: query
+          type: string
+        - name: resultsPerPage
+          in: query
+          type: string
+        - name: sort
+          in: query
+          type: string
+        - name: sortDirection
+          in: query
+          type: string
+        - name: search
+          in: query
+          type: string
+        - name: ownerId
+          in: query
+          type: string
+        - name: type
+          in: query
+          type: string
+        - name: status
+          in: query
+          type: string
+        - name: priority
+          in: query
+          type: string
+        - name: priceLow
+          in: query
+          type: string
+        - name: priceHigh
+          in: query
+          type: string
+        - name: town
+          in: query
+          type: string
+        - name: county
+          in: query
+          type: string
+        - name: postcode
+          in: query
+          type: string
+      responses:
+        "200":
+          description: List of properties
+          content:
+            application/json:
+              schema:
+                $ref: ./property.json#/definitions/propertyList
+        "500":
+          description: Cannot get a list of properties.
+
+  /properties/{id}:
+    parameters:
+      - in: path
+        name: id
+        schema:
+          type: string
+        required: true
+        description: Alphanumeric ID of the property.
+    get:
+      tags:
+        - Properties
+      summary: Get property by ID
+      description: Retrieve property details by ID.
+      responses:
+        "200":
+          description: Accessible fields from the property record.
+          content:
+            application/json:
+              schema:
+                $ref: ./property.json#/definitions/property
+        "404":
+          description: Property with the provided ID does not exist.
+        "401":
+          description: Archived properties may only be viewed by the creator.
+        "500":
+          description: Cannot get property.
+    put:
+      tags:
+        - Properties
+      summary: Update property details by ID
+      description: Update the specified property. Only updatable fields can be updated.
+      requestBody:
+        description: Update an updatable field.
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: ./property.json#/definitions/propertyUpdate
+      responses:
+        "200":
+          description: Accessible fields from the updated property record.
+          content:
+            application/json:
+              schema:
+                $ref: ./property.json#/definitions/property
+        "404":
+          description: Property with the provided ID does not exist.
+        "401":
+          description: Properties can only be updated by their creator.
+        "500":
+          description: Cannot update property.
+    delete:
+      tags:
+        - Properties
+      summary: Delete property by ID
+      description: Delete the specified property record.
+      responses:
+        "200":
+          description: Accessible fields from the deleted property record.
+          content:
+            application/json:
+              schema:
+                $ref: ./property.json#/definitions/property
+        "404":
+          description: Property with the provided ID does not exist.
+        "401":
+          description: Properties can only be deleted by their creator.
+        "500":
+          description: Cannot delete property.

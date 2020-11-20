@@ -14,7 +14,7 @@ const {user, userCreate, userUpdate} = userSchema.definitions;
 const {
   propertyCreate,
   propertyUpdate,
-  propertyList,
+  propertySearch,
 } = propertySchema.definitions;
 
 const validator = new JsonSchema.Validator();
@@ -64,5 +64,5 @@ export const validatePropertyCreate = makeValidator(
 export const validatePropertyUpdate = makeValidator(
     propertyUpdate, 'propertyUpdate');
 /** Validate data against property schema for listing */
-export const validatePropertyList = makeValidator(
-    propertyList, 'propertyList', true);
+export const validatePropertySearch = makeValidator(
+    propertySearch, 'propertySearch', true);
