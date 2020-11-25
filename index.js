@@ -10,6 +10,7 @@ import './docs.js';
 import Koa from 'koa';
 import Router from 'koa-router';
 import bodyParser from 'koa-bodyparser';
+import cors from '@koa/cors';
 import {connect} from './models/db.js';
 import users from './routes/users.js';
 import properties from './routes/properties.js';
@@ -18,6 +19,9 @@ const port = process.env.PORT || 3000;
 
 const app = new Koa();
 app.use(bodyParser());
+app.use(cors({
+  origin: 'http://localhost:3000',
+}));
 const router = new Router();
 
 app.use(router.routes());
