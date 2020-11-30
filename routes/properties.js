@@ -59,8 +59,8 @@ async function getProperties(ctx) {
     ctx.body = {
       properties: properties
           .map((p) => pick(p, p.accessibleFieldsBy(ability, 'read'))),
-      page,
-      resultsPerPage,
+      page: Number(page),
+      resultsPerPage: Number(resultsPerPage),
       propertyCount,
       pageCount: Math.ceil(propertyCount / resultsPerPage),
     };
