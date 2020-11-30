@@ -88,7 +88,7 @@
             "description": "Full property object",
             "type": "object",
             "properties": {
-                "id": { "$ref": "property.json#/definitions/id" },
+                "_id": { "$ref": "property.json#/definitions/id" },
                 "title": { "$ref": "property.json#/definitions/title" },
                 "description": { "$ref": "property.json#/definitions/description" },
                 "ownerId": { "$ref": "property.json#/definitions/ownerId" },
@@ -160,9 +160,18 @@
         "propertyList": {
             "title": "Property List",
             "description": "List of properties",
-            "type": "array",
-            "items": {
-                "$ref": "property.json#/definitions/property"
+            "type": "object",
+            "properties": {
+                "properties": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "property.json#/definitions/property"
+                    }
+                },
+                "page": { "type":"number" },
+                "resultsPerPage": { "type":"number" },
+                "propertyCount": { "type":"number" },
+                "pageCount": { "type":"number" }
             }
         }
     }
