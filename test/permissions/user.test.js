@@ -5,6 +5,7 @@ import '../../helpers/setup.js';
 import {defineAbilitiesFor} from '../../permissions/users.js';
 import User from '../../models/user.js';
 import Property from '../../models/property.js';
+import Message from '../../models/message.js';
 import Roles from '../../config/roles.js';
 
 /**
@@ -186,5 +187,34 @@ test('Users can read their archived properties', async (t) => {
     const ability = await defineAbilitiesFor(null);
     const property = propertyWithOwnerId('id');
     t.true(ability[access](action, property));
+  });
+});
+
+// Users can {action} messages for them
+['read', 'update', 'delete'].forEach((action) => {
+  test(`Users cannot ${action} other messages`, async (t) => {
+    const user = userWithRole('id', Roles.USER);
+    const ability = await defineAbilitiesFor(user);
+    const message = messageWithReceiverUserId('id');
+    t.true(ability.can(action, message));
+  });
+});
+
+// Users cannot {action} other messages
+['read', 'update', 'delete'].forEach((action) => {
+  test(`Users cannot ${action} other messages`, async (t) => {
+    const user = userWithRole('id', Roles.USER);
+    const ability = await defineAbilitiesFor(user);
+    const message = messageWithReceiverUserId('other-id');
+    t.true(ability.cannot(action, message));
+  });
+});
+
+// Guests cannot {action} messages
+['read', 'update', 'delete'].forEach((action) => {
+  test(`Guests cannot ${action} messages`, async (t) => {
+    const ability = await defineAbilitiesFor(null);
+    const message = messageWithReceiverUserId('id');
+    t.true(ability.cannot(action, message));
   });
 });

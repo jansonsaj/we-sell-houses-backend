@@ -8,6 +8,7 @@ import casl from '@casl/ability';
 import Roles from '../config/roles.js';
 import User from '../models/user.js';
 import Property from '../models/property.js';
+import Message from '../models/message.js';
 
 const {Ability, AbilityBuilder} = casl;
 
@@ -35,6 +36,10 @@ export const defineAbilitiesFor = async (user) => {
       can('read', Property, {ownerId: userId});
       can('update', Property, {ownerId: userId});
       can('delete', Property, {ownerId: userId});
+
+      can('read', Message, {receiverUserId: userId});
+      can('update', Message, {receiverUserId: userId});
+      can('delete', Message, {receiverUserId: userId});
     }
     if (roleNames.includes(Roles.ADMIN)) {
       can('read', User);
@@ -44,6 +49,10 @@ export const defineAbilitiesFor = async (user) => {
       can('read', Property);
       can('update', Property);
       can('delete', Property);
+
+      can('read', Message);
+      can('update', Message);
+      can('delete', Message);
     }
   }
 
