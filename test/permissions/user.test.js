@@ -60,22 +60,28 @@ function propertyWithOwnerId(ownerId) {
   return property;
 }
 
-test('User\'s can read their own User', async (t) => {
-  const user = userWithRole('id', Roles.USER);
-  const ability = await defineAbilitiesFor(user);
-  t.true(ability.can('read', user));
-});
+/**
+ * A sample message with specific receiver user id
+ * @param {string} receiverUserId Message receiver user id
+ * @return {Property} sample message
+ */
+function messageWithReceiverUserId(receiverUserId) {
+  const message = new Message({
+    body: 'message body',
+    senderEmail: 'email@email.com',
+    senderPhone: '12345678',
+  });
+  sinon.stub(message, 'receiverUserId').get(() => receiverUserId);
+  return message;
+}
 
-test('User\'s can update their own User', async (t) => {
-  const user = userWithRole('id', Roles.USER);
-  const ability = await defineAbilitiesFor(user);
-  t.true(ability.can('update', user));
-});
-
-test('User\'s can delete their own User', async (t) => {
-  const user = userWithRole('id', Roles.USER);
-  const ability = await defineAbilitiesFor(user);
-  t.true(ability.can('delete', user));
+// Users can {action} their own user
+['read', 'update', 'delete'].forEach((action) => {
+  test(`Users can ${action} their own user`, async (t) => {
+    const user = userWithRole('id', Roles.USER);
+    const ability = await defineAbilitiesFor(user);
+    t.true(ability.can(action, user));
+  });
 });
 
 test('User\'s can\'t read their password', async (t) => {
@@ -84,98 +90,74 @@ test('User\'s can\'t read their password', async (t) => {
   t.false(user.accessibleFieldsBy(ability, 'read').includes('password'));
 });
 
-test('User\'s can\'t read other users', async (t) => {
-  const user = userWithRole('id', Roles.USER);
-  const ability = await defineAbilitiesFor(user);
-  const otherUser = userWithId('other-id');
-  t.true(ability.cannot('read', otherUser));
+// Users cannot {action} other users
+['read', 'update', 'delete'].forEach((action) => {
+  test(`Users cannot ${action} all properties`, async (t) => {
+    const user = userWithRole('id', Roles.USER);
+    const ability = await defineAbilitiesFor(user);
+    const otherUser = userWithId('other-id');
+    t.true(ability.cannot(action, otherUser));
+  });
 });
 
-test('User\'s can\'t update other users', async (t) => {
-  const user = userWithRole('id', Roles.USER);
-  const ability = await defineAbilitiesFor(user);
-  const otherUser = userWithId('other-id');
-  t.true(ability.cannot('update', otherUser));
+// Admins can {action} all users
+['read', 'update', 'delete'].forEach((action) => {
+  test(`Admins can ${action} all users`, async (t) => {
+    const admin = userWithRole('id', Roles.ADMIN);
+    const ability = await defineAbilitiesFor(admin);
+    const otherUser = userWithId('other-id');
+    t.true(ability.can(action, otherUser));
+  });
 });
 
-test('User\'s can\'t delete other users', async (t) => {
-  const user = userWithRole('id', Roles.USER);
-  const ability = await defineAbilitiesFor(user);
-  const otherUser = userWithId('other-id');
-  t.true(ability.cannot('delete', otherUser));
+// Users {access} update their {field}
+[
+  {access: 'can', field: 'password'},
+  {access: 'can', field: 'email'},
+  {access: 'cannot', field: 'id'},
+  {access: 'cannot', field: 'roles'},
+].forEach(({access, field}) => {
+  test(`Users ${access} update their ${field}`, async (t) => {
+    const user = userWithRole('id', Roles.USER);
+    const ability = await defineAbilitiesFor(user);
+    t[access === 'can' ? 'true': 'false'](
+        user.accessibleFieldsBy(ability, 'update').includes(field),
+    );
+  });
 });
 
-test('Admins can read all users', async (t) => {
-  const admin = userWithRole('id', Roles.ADMIN);
-  const ability = await defineAbilitiesFor(admin);
-  const otherUser = userWithId('other-id');
-  t.true(ability.can('read', otherUser));
+// Admins can {action} all properties
+['read', 'update', 'delete'].forEach((action) => {
+  test(`Admins can ${action} all properties`, async (t) => {
+    const admin = userWithRole('id', Roles.ADMIN);
+    const ability = await defineAbilitiesFor(admin);
+    const property = propertyWithOwnerId('other-id');
+    t.true(ability.can(action, property));
+  });
 });
 
-test('Admins can update all users', async (t) => {
-  const admin = userWithRole('id', Roles.ADMIN);
-  const ability = await defineAbilitiesFor(admin);
-  const otherUser = userWithId('other-id');
-  t.true(ability.can('update', otherUser));
+// Users can {action} their properties
+['read', 'update', 'delete'].forEach((action) => {
+  test(`Users can ${action} their properties`, async (t) => {
+    const user = userWithRole('id', Roles.USER);
+    const ability = await defineAbilitiesFor(user);
+    const property = propertyWithOwnerId('id');
+    t.true(ability.can(action, property));
+  });
 });
 
-test('Admins can delete all users', async (t) => {
-  const admin = userWithRole('id', Roles.ADMIN);
-  const ability = await defineAbilitiesFor(admin);
-  const otherUser = userWithId('other-id');
-  t.true(ability.can('delete', otherUser));
-});
-
-test('User\'s can update their password', async (t) => {
-  const user = userWithRole('id', Roles.USER);
-  const ability = await defineAbilitiesFor(user);
-  t.true(user.accessibleFieldsBy(ability, 'update').includes('password'));
-});
-
-test('User\'s can update their email', async (t) => {
-  const user = userWithRole('id', Roles.USER);
-  const ability = await defineAbilitiesFor(user);
-  t.true(user.accessibleFieldsBy(ability, 'update').includes('email'));
-});
-
-test('User\'s can\'t update their id', async (t) => {
-  const user = userWithRole('id', Roles.USER);
-  const ability = await defineAbilitiesFor(user);
-  t.false(user.accessibleFieldsBy(ability, 'update').includes('id'));
-});
-
-test('User\'s can\'t update their roles', async (t) => {
-  const user = userWithRole('id', Roles.USER);
-  const ability = await defineAbilitiesFor(user);
-  t.false(user.accessibleFieldsBy(ability, 'update').includes('roles'));
-});
-
-test('Admins can read all properties', async (t) => {
-  const admin = userWithRole('id', Roles.ADMIN);
-  const ability = await defineAbilitiesFor(admin);
-  const property = propertyWithOwnerId('other-id');
-  t.true(ability.can('read', property));
-});
-
-test('Admins can update all properties', async (t) => {
-  const admin = userWithRole('id', Roles.ADMIN);
-  const ability = await defineAbilitiesFor(admin);
-  const property = propertyWithOwnerId('other-id');
-  t.true(ability.can('update', property));
-});
-
-test('Admins can delete all properties', async (t) => {
-  const admin = userWithRole('id', Roles.ADMIN);
-  const ability = await defineAbilitiesFor(admin);
-  const property = propertyWithOwnerId('other-id');
-  t.true(ability.can('delete', property));
-});
-
-test('Users can read other properties', async (t) => {
-  const user = userWithRole('id', Roles.USER);
-  const ability = await defineAbilitiesFor(user);
-  const property = propertyWithOwnerId('other-id');
-  t.true(ability.can('read', property));
+// Users {access} {action} other properties
+[
+  {access: 'can', action: 'read'},
+  {access: 'cannot', action: 'update'},
+  {access: 'cannot', action: 'delete'},
+].forEach(({access, action}) => {
+  test(`Users ${access} ${action} other properties`, async (t) => {
+    const user = userWithRole('id', Roles.USER);
+    const ability = await defineAbilitiesFor(user);
+    const property = propertyWithOwnerId('other-id');
+    t.true(ability[access](action, property));
+  });
 });
 
 test('Users cannot read other archived properties', async (t) => {
@@ -194,48 +176,15 @@ test('Users can read their archived properties', async (t) => {
   t.true(ability.can('read', property));
 });
 
-test('Users can update their properties', async (t) => {
-  const user = userWithRole('id', Roles.USER);
-  const ability = await defineAbilitiesFor(user);
-  const property = propertyWithOwnerId('id');
-  t.true(ability.can('update', property));
-});
-
-test('Users cannot update other properties', async (t) => {
-  const user = userWithRole('id', Roles.USER);
-  const ability = await defineAbilitiesFor(user);
-  const property = propertyWithOwnerId('other-id');
-  t.true(ability.cannot('update', property));
-});
-
-test('Users can delete their properties', async (t) => {
-  const user = userWithRole('id', Roles.USER);
-  const ability = await defineAbilitiesFor(user);
-  const property = propertyWithOwnerId('id');
-  t.true(ability.can('delete', property));
-});
-
-test('Users cannot delete other properties', async (t) => {
-  const user = userWithRole('id', Roles.USER);
-  const ability = await defineAbilitiesFor(user);
-  const property = propertyWithOwnerId('other-id');
-  t.true(ability.cannot('delete', property));
-});
-
-test('Guests can read properties', async (t) => {
-  const ability = await defineAbilitiesFor(null);
-  const property = propertyWithOwnerId('id');
-  t.true(ability.can('read', property));
-});
-
-test('Guests cannot update properties', async (t) => {
-  const ability = await defineAbilitiesFor(null);
-  const property = propertyWithOwnerId('id');
-  t.true(ability.cannot('update', property));
-});
-
-test('Guests cannot delete properties', async (t) => {
-  const ability = await defineAbilitiesFor(null);
-  const property = propertyWithOwnerId('id');
-  t.true(ability.cannot('delete', property));
+// Guests {access} {action} properties
+[
+  {access: 'can', action: 'read'},
+  {access: 'cannot', action: 'update'},
+  {access: 'cannot', action: 'delete'},
+].forEach(({access, action}) => {
+  test(`Guests ${access} ${action} properties`, async (t) => {
+    const ability = await defineAbilitiesFor(null);
+    const property = propertyWithOwnerId('id');
+    t.true(ability[access](action, property));
+  });
 });
