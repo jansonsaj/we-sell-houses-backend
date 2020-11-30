@@ -192,7 +192,7 @@ test('Users can read their archived properties', async (t) => {
 
 // Users can {action} messages for them
 ['read', 'update', 'delete'].forEach((action) => {
-  test(`Users cannot ${action} other messages`, async (t) => {
+  test(`Users can ${action} messages for them`, async (t) => {
     const user = userWithRole('id', Roles.USER);
     const ability = await defineAbilitiesFor(user);
     const message = messageWithReceiverUserId('id');
