@@ -115,7 +115,7 @@
                 },
                 "page": { "type":"number" },
                 "resultsPerPage": { "type":"number" },
-                "propertyCount": { "type":"number" },
+                "messageCount": { "type":"number" },
                 "pageCount": { "type":"number" }
             }
         }
