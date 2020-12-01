@@ -1,5 +1,8 @@
 import test from 'ava';
-import {propertySearchQuery} from '../../helpers/query-builder.js';
+import {
+  propertySearchQuery,
+  messageSearchQuery,
+} from '../../helpers/query-builder.js';
 
 test('propertySearchQuery() creates correct query from all parameters',
     async (t) => {
@@ -83,3 +86,30 @@ test('propertySearchQuery() creates correct query form no parameters',
       t.deepEqual(propertySearchQuery(searchParams), expected);
     });
 
+test('messageSearchQuery() creates correct query from all parameters',
+    async (t) => {
+      const searchParams = {
+        receiverUserId: '123',
+        status: 'sent',
+        propertyId: '456',
+      };
+      const expected = [
+        {
+          receiverUserId: '123',
+        },
+        {
+          status: 'sent',
+        },
+        {
+          propertyId: '456',
+        },
+      ];
+      t.deepEqual(messageSearchQuery(searchParams), expected);
+    });
+
+test('messageSearchQuery() creates correct query form no parameters',
+    async (t) => {
+      const searchParams = {};
+      const expected = [];
+      t.deepEqual(messageSearchQuery(searchParams), expected);
+    });

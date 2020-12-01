@@ -65,3 +65,28 @@ export function propertySearchQuery(searchParams) {
   }
   return query;
 }
+
+/**
+  * Builds a search query for Message documents from search parameters
+  * @param {object} searchParams Object with optional search params
+  * @return {object[]} Returns a search query
+  */
+export function messageSearchQuery(searchParams) {
+  const {
+    receiverUserId,
+    status,
+    propertyId,
+  } = searchParams;
+
+  const query = [];
+  if (receiverUserId) {
+    query.push({receiverUserId});
+  }
+  if (status) {
+    query.push({status});
+  }
+  if (propertyId) {
+    query.push({propertyId});
+  }
+  return query;
+}

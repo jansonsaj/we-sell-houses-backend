@@ -64,7 +64,7 @@ function propertyWithOwnerId(ownerId) {
 /**
  * A sample message with specific receiver user id
  * @param {string} receiverUserId Message receiver user id
- * @return {Property} sample message
+ * @return {Message} sample message
  */
 function messageWithReceiverUserId(receiverUserId) {
   const message = new Message({
