@@ -9,6 +9,7 @@ import JsonSchema from 'jsonschema';
 import userSchema from '../schemas/user.json';
 import roleSchema from '../schemas/role.json';
 import propertySchema from '../schemas/property.json';
+import messageSchema from '../schemas/message.json';
 
 const {user, userCreate, userUpdate} = userSchema.definitions;
 const {
@@ -16,11 +17,17 @@ const {
   propertyUpdate,
   propertySearch,
 } = propertySchema.definitions;
+const {
+  messageCreate,
+  messageUpdate,
+  messageSearch,
+} = messageSchema.definitions;
 
 const validator = new JsonSchema.Validator();
 validator.addSchema(userSchema);
 validator.addSchema(roleSchema);
 validator.addSchema(propertySchema);
+validator.addSchema(messageSchema);
 
 /**
  * Wrapper that returns Koa middleware validator for a given schema
@@ -66,3 +73,13 @@ export const validatePropertyUpdate = makeValidator(
 /** Validate data against property schema for listing */
 export const validatePropertySearch = makeValidator(
     propertySearch, 'propertySearch', true);
+
+/** Validate data against property schema for creating */
+export const validateMessageCreate = makeValidator(
+    messageCreate, 'messageCreate');
+/** Validate data against property schema for updating */
+export const validateMessageUpdate = makeValidator(
+    messageUpdate, 'messageUpdate');
+/** Validate data against property schema for listing */
+export const validateMessageSearch = makeValidator(
+    messageSearch, 'messageSearch', true);

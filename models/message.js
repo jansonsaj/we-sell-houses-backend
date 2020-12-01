@@ -1,8 +1,8 @@
 /**
- * A module to define the User database model and schema
- * @module models/user
+ * A module to define the Message database model and schema
+ * @module models/message
  * @author Andris Jansons
- * @see schemas/user.json for equivalent JSON schema
+ * @see schemas/message.json for equivalent JSON schema
  */
 
 import mongoose from 'mongoose';
@@ -38,7 +38,7 @@ const MessageSchema = new mongoose.Schema({
     ref: 'User',
     required: true,
   },
-});
+}, {timestamps: true});
 
 /**
  * Adds a method getReceiverUser() to Message schema,
