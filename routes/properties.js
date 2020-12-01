@@ -31,10 +31,10 @@ router.del('/:id', auth, deleteProperty);
 async function getProperties(ctx) {
   try {
     const {
-      page = 1, // In schema enforce min = 1
+      page = 1,
       resultsPerPage = 10,
-      sort = 'createdAt', // In schema set available values
-      sortDirection = 'desc', // Allow only asc and desc
+      sort = 'createdAt',
+      sortDirection = 'desc',
       ...searchParams
     } = ctx.request.query;
 
