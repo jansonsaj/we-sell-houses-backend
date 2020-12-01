@@ -1,0 +1,123 @@
+{
+    "$id": "message.json",
+    "$schema": "http://json-schema.org/draft-07/schema#",
+    "definitions": {
+        "id": {
+            "type": "string",
+            "description": "Unique message identifier"
+        },
+        "senderEmail": {
+            "type": "string",
+            "format": "email",
+            "description": "Unique message identifier"
+        },
+        "senderPhone": {
+            "type": "string",
+            "description": "Unique message identifier"
+        },
+        "body": {
+            "type": "string",
+            "description": "Unique message identifier"
+        },
+        "receiverUserId": {
+            "$ref": "user.json#/definitions/id"
+        },
+        "propertyId": {
+            "$ref": "property.json#/definitions/id"
+        },
+        "status": {
+            "description": "Message status",
+            "enum": [
+                "sent", "read", "archived"
+            ]
+        },
+        "sort": {
+            "type": "string",
+            "description": "A property to sort by"
+        },
+        "sortDirection": {
+            "type": "string",
+            "description": "Sorting direction",
+            "enum": [
+                "asc", "desc"
+            ]
+        },
+        "stringNumber": {
+            "description": "Non-negative number as string",
+            "type": "string",
+            "pattern": "^\\d+$"
+        },
+        "message": {
+            "title": "Message",
+            "description": "Full message object",
+            "type": "object",
+            "properties": {
+                "_id": { "$ref": "message.json#/definitions/id" },
+                "senderEmail": { "$ref": "message.json#/definitions/senderEmail" },
+                "senderPhone": { "$ref": "message.json#/definitions/senderPhone" },
+                "body": { "$ref": "message.json#/definitions/body" },
+                "receiverUserId": { "$ref": "message.json#/definitions/receiverUserId" },
+                "propertyId": { "$ref": "message.json#/definitions/propertyId" },
+                "status": { "$ref": "message.json#/definitions/status" }
+            },
+            "required": ["senderEmail", "body", "propertyId", "receiverUserId"],
+            "additionalProperties": false
+        },
+        "messageCreate": {
+            "title": "Message Create",
+            "description": "Message object for creating a new message",
+            "type": "object",
+            "properties": {
+                "senderEmail": { "$ref": "message.json#/definitions/senderEmail" },
+                "senderPhone": { "$ref": "message.json#/definitions/senderPhone" },
+                "body": { "$ref": "message.json#/definitions/body" },
+                "receiverUserId": { "$ref": "message.json#/definitions/receiverUserId" },
+                "propertyId": { "$ref": "message.json#/definitions/propertyId" },
+                "status": { "$ref": "message.json#/definitions/status" }
+            },
+            "required": ["senderEmail", "body", "propertyId", "receiverUserId"],
+            "additionalProperties": false
+        },
+        "messageUpdate": {
+            "title": "Message Update",
+            "description": "Message object for updating an existing message",
+            "type": "object",
+            "properties": {
+                "status": { "$ref": "message.json#/definitions/status" }
+            },
+            "additionalProperties": false
+        },
+        "messageSearch": {
+            "title": "Message Search",
+            "description": "Query parameters for filtering, sorting and paginating messages",
+            "type": "object",
+            "properties": {
+                "page": { "$ref": "message.json#/definitions/stringNumber" },
+                "resultsPerPage": { "$ref": "message.json#/definitions/stringNumber" },
+                "sort": { "$ref": "message.json#/definitions/sort" },
+                "sortDirection": { "$ref": "message.json#/definitions/sortDirection" },
+                "receiverUserId": { "$ref": "message.json#/definitions/receiverUserId" },
+                "propertyId": { "$ref": "message.json#/definitions/propertyId" },
+                "status": { "$ref": "message.json#/definitions/status" }
+            },
+            "additionalProperties": false
+        },
+        "messageList": {
+            "title": "Message List",
+            "description": "List of messages",
+            "type": "object",
+            "properties": {
+                "messages": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "message.json#/definitions/message"
+                    }
+                },
+                "page": { "type":"number" },
+                "resultsPerPage": { "type":"number" },
+                "propertyCount": { "type":"number" },
+                "pageCount": { "type":"number" }
+            }
+        }
+    }
+}

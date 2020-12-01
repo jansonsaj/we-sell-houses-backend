@@ -7,6 +7,9 @@ import {
   validatePropertyCreate,
   validatePropertyUpdate,
   validatePropertySearch,
+  validateMessageCreate,
+  validateMessageUpdate,
+  validateMessageSearch,
 } from '../../middlewares/validation.js';
 
 /**
@@ -34,7 +37,7 @@ function sampleProperty() {
 
 /**
  * A sample property used in testing
- * @return {object} Returns property obejct
+ * @return {object} Returns list property object
  */
 function sampleListProperty() {
   return {
@@ -52,6 +55,20 @@ function sampleListProperty() {
     postcode: 'postcode',
     priceLow: '1',
     priceHigh: '100',
+  };
+}
+
+/**
+ * A sample message used in testing
+ * @return {Message} Returns message object
+ */
+function sampleMessage() {
+  return {
+    body: 'message body',
+    senderEmail: 'email@email.com',
+    senderPhone: '12345678',
+    receiverUserId: '123',
+    propertyId: '456',
   };
 }
 
@@ -415,6 +432,118 @@ test(`validatePropertySearch() with no parameters calls next`,
       const next = sinon.stub();
 
       await validatePropertySearch(ctx, next);
+
+      t.true(next.called);
+    });
+
+test(`validateMessageCreate() with valid message calls next`, async (t) => {
+  const ctx = {
+    request: {
+      body: sampleMessage(),
+    },
+  };
+  const next = sinon.stub();
+
+  await validateMessageCreate(ctx, next);
+
+  t.true(next.called);
+});
+
+test(`validateMessageCreate() with additional parameters doesn't call next`,
+    async (t) => {
+      const ctx = {
+        request: {
+          body: sampleMessage(),
+        },
+      };
+      ctx.request.body._id = 123;
+      const next = sinon.stub();
+
+      await validateMessageCreate(ctx, next);
+
+      t.is(ctx.status, 400);
+      t.is(ctx.body.message,
+          'is not allowed to have the additional property "_id"');
+      t.true(next.notCalled);
+    });
+
+
+test(`validateMessageUpdate() with only status calls next`, async (t) => {
+  const ctx = {
+    request: {
+      body: {
+        status: 'archived',
+      },
+    },
+  };
+  const next = sinon.stub();
+
+  await validateMessageUpdate(ctx, next);
+
+  t.true(next.called);
+});
+
+// Only status is updatable for a message, trying to update any other
+// property should fail and not call next
+[
+  '_id', 'senderEmail', 'senderPhone',
+  'body', 'receiverUserId', 'propertyId',
+].forEach((nonUpdatableProperty) => {
+  test(
+      `validateMessageUpdate() with additional
+      parameter ${nonUpdatableProperty} doesn't call next`,
+      async (t) => {
+        const ctx = {
+          request: {
+            body: {
+              [nonUpdatableProperty]: '123',
+            },
+          },
+        };
+        const next = sinon.stub();
+
+        await validateMessageUpdate(ctx, next);
+
+        t.is(ctx.status, 400);
+        t.is(ctx.body.message, 'is not allowed to have the ' +
+            `additional property "${nonUpdatableProperty}"`);
+        t.true(next.notCalled);
+      });
+});
+
+
+test(`validateMessageSearch() with a valid request calls next`,
+    async (t) => {
+      const ctx = {
+        request: {
+          query: {
+            page: '1',
+            resultsPerPage: '10',
+            sort: 'createdAt',
+            sortDirection: 'desc',
+            receiverUserId: '123',
+            propertyId: '456',
+            status: 'archived',
+          },
+        },
+      };
+      const next = sinon.stub();
+
+      await validateMessageSearch(ctx, next);
+
+      t.true(next.called);
+    });
+
+test(`validateMessageSearch() with no parameters calls next`,
+    async (t) => {
+      const ctx = {
+        request: {
+          query: {},
+        },
+      };
+      const next = sinon.stub();
+
+      await validateMessageSearch(ctx, next);
 
       t.true(next.called);
     });
