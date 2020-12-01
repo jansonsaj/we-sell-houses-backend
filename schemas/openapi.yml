@@ -17,6 +17,8 @@ tags:
     description: API endpoints for user management
   - name: Properties
     description: API endpoints for property management
+  - name: Messages
+    description: API endpoints for message management
 paths:
   /users:
     post:
@@ -188,7 +190,7 @@ paths:
     get:
       tags:
         - Properties
-      summary: Get a list properties
+      summary: Get a list of properties
       description: >
         Retrieve a paginated list of properties.
         Allows specifying results per page as well as a field to sort by and sort direction.
@@ -316,3 +318,134 @@ paths:
           description: Properties can only be deleted by their creator.
         "500":
           description: Cannot delete property.
+
+  /messages:
+    post:
+      tags:
+        - Messages
+      summary: Create a new message
+      requestBody:
+        description: New message data.
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: ./message.json#/definitions/messageCreate
+      responses:
+        "201":
+          description: Message created.
+          content:
+            application/json:
+              schema:
+                $ref: ./message.json#/definitions/message
+        "500":
+          description: Unable to create message due to an unexpected error.
+    get:
+      tags:
+        - Messages
+      summary: Get a list of messages
+      description: >
+        Retrieve a paginated list of message.
+        Allows specifying results per page as well as a field to sort by and sort direction.
+        Supports filters by most fields.
+      parameters:
+        - name: page
+          in: query
+          type: string
+        - name: resultsPerPage
+          in: query
+          type: string
+        - name: sort
+          in: query
+          type: string
+        - name: sortDirection
+          in: query
+          type: string
+        - name: receiverUserId
+          in: query
+          type: string
+        - name: propertyId
+          in: query
+          type: string
+        - name: status
+          in: query
+          type: string
+      responses:
+        "200":
+          description: List of messages
+          content:
+            application/json:
+              schema:
+                $ref: ./message.json#/definitions/messageList
+        "500":
+          description: Cannot get a list of messages.
+
+  /messages/{id}:
+    parameters:
+      - in: path
+        name: id
+        schema:
+          type: string
+        required: true
+        description: Alphanumeric ID of the message.
+    get:
+      tags:
+        - Messages
+      summary: Get message by ID
+      description: Retrieve message details by ID.
+      responses:
+        "200":
+          description: Accessible fields from the message record.
+          content:
+            application/json:
+              schema:
+                $ref: ./message.json#/definitions/message
+        "404":
+          description: Message with the provided ID does not exist.
+        "401":
+          description: Messages may only be read by the receiver.
+        "500":
+          description: Cannot get message.
+    put:
+      tags:
+        - Messages
+      summary: Update message details by ID
+      description: Update the specified message. Only updatable fields can be updated.
+      requestBody:
+        description: Update an updatable field.
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: ./message.json#/definitions/messageUpdate
+      responses:
+        "200":
+          description: Accessible fields from the updated message record.
+          content:
+            application/json:
+              schema:
+                $ref: ./message.json#/definitions/message
+        "404":
+          description: Message with the provided ID does not exist.
+        "401":
+          description: Message can only be updated by their receiver.
+        "500":
+          description: Cannot update message.
+    delete:
+      tags:
+        - Messages
+      summary: Delete message by ID
+      description: Delete the specified message record.
+      responses:
+        "200":
+          description: Accessible fields from the deleted message record.
+          content:
+            application/json:
+              schema:
+                $ref: ./message.json#/definitions/message
+        "404":
+          description: Message with the provided ID does not exist.
+        "401":
+          description: Messages can only be deleted by their receiver.
+        "500":
+          description: Cannot delete message.
