@@ -37,7 +37,6 @@
             "items": {
                 "type": "string"
             },
-            "minItems": 1,
             "uniqueItems": true
         },
         "priority": {
@@ -68,6 +67,20 @@
             },
             "required": ["addressLine1", "town", "postcode"]
         },
+        "file": {
+            "type": "object",
+            "properties": {
+                "fileLocation": {"type": "string"},
+                "type": {"type": "string"}
+            },
+            "required": ["fileLocation", "type"]
+        },
+        "files": {
+            "type": "array",
+            "items": {
+                "$ref": "property.json#/definitions/file"
+            }
+        },
         "search": {
             "type": "string",
             "description": "A phrase to search for"
@@ -97,7 +110,8 @@
                 "features": { "$ref": "property.json#/definitions/features" },
                 "priority": { "$ref": "property.json#/definitions/priority" },
                 "price": { "$ref": "property.json#/definitions/price" },
-                "location": { "$ref": "property.json#/definitions/location" }
+                "location": { "$ref": "property.json#/definitions/location" },
+                "files": { "$ref": "property.json#/definitions/files" }
             },
             "required": ["title", "ownerId", "type"],
             "additionalProperties": false
@@ -114,7 +128,8 @@
                 "features": { "$ref": "property.json#/definitions/features" },
                 "priority": { "$ref": "property.json#/definitions/priority" },
                 "price": { "$ref": "property.json#/definitions/price" },
-                "location": { "$ref": "property.json#/definitions/location" }
+                "location": { "$ref": "property.json#/definitions/location" },
+                "files": { "$ref": "property.json#/definitions/files" }
             },
             "required": ["title", "type"],
             "additionalProperties": false
@@ -131,7 +146,8 @@
                 "features": { "$ref": "property.json#/definitions/features" },
                 "priority": { "$ref": "property.json#/definitions/priority" },
                 "price": { "$ref": "property.json#/definitions/price" },
-                "location": { "$ref": "property.json#/definitions/location" }
+                "location": { "$ref": "property.json#/definitions/location" },
+                "files": { "$ref": "property.json#/definitions/files" }
             },
             "additionalProperties": false
         },
