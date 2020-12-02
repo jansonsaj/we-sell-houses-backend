@@ -18,11 +18,38 @@ import {messageSearchQuery} from '../helpers/query-builder.js';
 
 const router = new Router({prefix: '/messages'});
 
+router.get('/summary', auth, getMessageSummary);
 router.get('/', auth, validateMessageSearch, getMessages);
 router.post('/', validateMessageCreate, createMessage);
 router.get('/:id', auth, getMessage);
 router.put('/:id', auth, validateMessageUpdate, updateMessage);
 router.del('/:id', auth, deleteMessage);
+
+/**
+ * Gets a summary that includes the number of
+ * unread messages for the user
+ * @param {Context} ctx Koa Context
+ */
+async function getMessageSummary(ctx) {
+  try {
+    const searchQuery = [
+      {receiverUserId: ctx.state.userId},
+      {status: 'sent'},
+    ];
+    const ability = await defineAbilitiesFor(ctx.state.user);
+    const unreadMessageCount = await Message
+        .accessibleBy(ability, 'read')
+        .and(searchQuery)
+        .countDocuments()
+        .exec();
+    ctx.body = {
+      unreadMessageCount,
+    };
+  } catch (err) {
+    ctx.status = 500;
+    ctx.body = err;
+  }
+}
 
 /**
  * Retrieves a filtered and paginated list of messages
