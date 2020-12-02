@@ -75,6 +75,16 @@ const PropertySchema = new mongoose.Schema({
     },
     required: false,
   },
+  files: [{
+    fileLocation: {
+      type: String,
+      required: true,
+    },
+    type: {
+      type: String,
+      required: true,
+    },
+  }],
 }, {timestamps: true});
 
 /**

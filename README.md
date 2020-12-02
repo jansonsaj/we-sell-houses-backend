@@ -34,3 +34,9 @@ To find documentation:
 1. Run the server using `npm start`.
    - To find OpenAPI specification visit [https://cable-elastic-3030.codio-box.uk/openapi](https://cable-elastic-3030.codio-box.uk/openapi)
    - To find JSDoc visit [https://cable-elastic-3030.codio-box.uk/](https://cable-elastic-3030.codio-box.uk/)
+
+## Image/video upload
+
+This API supports uploading static image and video files. These uploaded files are stored in `/public` directory, which gets created at startup. The application needs sufficient permissions to create and write to this directory. One way to achieve this is by running the application as the root user with `sudo npm start`.
+
+Ideally, the images and videos should not be stored on local filesystem, but instead in a dedicated object storage such as Amazon S3. This is only done for prototyping purposes and should not be used in production.
