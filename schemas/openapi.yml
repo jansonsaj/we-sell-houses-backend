@@ -19,6 +19,8 @@ tags:
     description: API endpoints for property management
   - name: Messages
     description: API endpoints for message management
+  - name: Files
+    description: API endpoints for file management
 paths:
   /users:
     post:
@@ -464,3 +466,28 @@ paths:
                 $ref: ./message.json#/definitions/messageSummary
         "500":
           description: Unable to get a message summary
+
+  /files:
+    post:
+      tags:
+        - Files
+      summary: Upload a file
+      requestBody:
+        description: File to be uploaded
+        required: true
+        content:
+          multipart/form-data:
+            schema:
+              type: object
+              properties:
+                file:
+                  type: object
+      responses:
+        "200":
+          description: Contains the stored location of the file and file type
+          content:
+            application/json:
+              schema:
+                $ref: ./property.json#/definitions/file
+        "500":
+          description: Unable to upload a file
