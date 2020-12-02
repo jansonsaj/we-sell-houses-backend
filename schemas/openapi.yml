@@ -449,3 +449,18 @@ paths:
           description: Messages can only be deleted by their receiver.
         "500":
           description: Cannot delete message.
+
+  /messages/summary:
+    get:
+      tags:
+        - Messages
+      summary: Get a high level summary of user's messages
+      responses:
+        "200":
+          description: Contains the message summary
+          content:
+            application/json:
+              schema:
+                $ref: ./message.json#/definitions/messageSummary
+        "500":
+          description: Unable to get a message summary

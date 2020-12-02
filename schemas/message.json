@@ -118,6 +118,14 @@
                 "messageCount": { "type":"number" },
                 "pageCount": { "type":"number" }
             }
+        },
+        "messageSummary": {
+            "title": "Message Summary",
+            "description": "A high level summary of the user's messages",
+            "type": "object",
+            "properties": {
+                "unreadMessageCount": { "type":"number" }
+            }
         }
     }
 }
