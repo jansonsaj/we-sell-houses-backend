@@ -16,7 +16,8 @@ import {
 import Message from '../models/message.js';
 import {messageSearchQuery} from '../helpers/query-builder.js';
 
-const router = new Router({prefix: '/messages'});
+const prefix = '/messages';
+const router = new Router({prefix});
 
 router.get('/summary', auth, getMessageSummary);
 router.get('/', auth, validateMessageSearch, getMessages);
@@ -44,6 +45,10 @@ async function getMessageSummary(ctx) {
         .exec();
     ctx.body = {
       unreadMessageCount,
+      links: {
+        all: `${ctx.protocol}://${ctx.host}${prefix}/`,
+        create: `${ctx.protocol}://${ctx.host}${prefix}/`,
+      },
     };
   } catch (err) {
     ctx.status = 500;
@@ -90,6 +95,10 @@ async function getMessages(ctx) {
       resultsPerPage: Number(resultsPerPage),
       messageCount,
       pageCount: Math.ceil(messageCount / resultsPerPage),
+      links: {
+        summary: `${ctx.protocol}://${ctx.host}${prefix}/summary`,
+        create: `${ctx.protocol}://${ctx.host}${prefix}/`,
+      },
     };
   } catch (err) {
     ctx.status = 500;
