@@ -40,7 +40,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: ./user.json#/definitions/userView
+                $ref: ./user.json#/definitions/userCreated
         "403":
           description: An account with that email address already exists.
         "500":

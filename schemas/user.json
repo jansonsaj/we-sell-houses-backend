@@ -71,6 +71,25 @@
             "required": ["email", "password", "signUpCode"],
             "additionalProperties": false
         },
+        "userCreated": {
+            "$id": "#userCreated",
+            "title": "User Created",
+            "description": "When user has been created",
+            "type": "object",
+            "properties": {
+                "user": {
+                    "$ref": "user.json#/definitions/user"
+                },
+                "links": {
+                    "type": "object",
+                    "properties": {
+                        "signIn": {
+                            "type": "string"
+                        }
+                    }
+                }
+            }
+        },
         "userView": {
             "$id": "#userView",
             "title": "User View",
@@ -123,6 +142,14 @@
                 },
                 "accessToken": {
                     "$ref": "user.json#/definitions/accessToken"
+                },
+                "links": {
+                    "type": "object",
+                    "properties": {
+                        "self": {
+                            "type": "string"
+                        }
+                    }
                 }
             }
         }
