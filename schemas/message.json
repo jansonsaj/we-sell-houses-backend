@@ -116,7 +116,18 @@
                 "page": { "type":"number" },
                 "resultsPerPage": { "type":"number" },
                 "messageCount": { "type":"number" },
-                "pageCount": { "type":"number" }
+                "pageCount": { "type":"number" },
+                "links": {
+                    "type": "object",
+                    "properties": {
+                        "summary": {
+                            "type": "string"
+                        },
+                        "create": {
+                            "type": "string"
+                        }
+                    }
+                }
             }
         },
         "messageSummary": {
@@ -124,7 +135,18 @@
             "description": "A high level summary of the user's messages",
             "type": "object",
             "properties": {
-                "unreadMessageCount": { "type":"number" }
+                "unreadMessageCount": { "type":"number" },
+                "links": {
+                    "type": "object",
+                    "properties": {
+                        "all": {
+                            "type": "string"
+                        },
+                        "create": {
+                            "type": "string"
+                        }
+                    }
+                }
             }
         }
     }
