@@ -24,7 +24,8 @@ import {
 } from '../middlewares/validation.js';
 import {isValidSignUpCode} from '../helpers/sign-up-codes.js';
 
-const router = new Router({prefix: '/users'});
+const prefix = '/users';
+const router = new Router({prefix});
 
 router.post('/', validateUserCreate, createUser);
 router.post('/signin', validateUser, signIn);
@@ -102,6 +103,9 @@ async function signIn(ctx) {
   ctx.body = {
     id: user.id,
     accessToken,
+    links: {
+      self: `${ctx.protocol}://${ctx.host}${prefix}/${user.id}`,
+    },
   };
 }
 
@@ -131,7 +135,12 @@ async function createUser(ctx) {
     const ability = await defineAbilitiesFor(user);
 
     ctx.status = 201;
-    ctx.body = pick(user, user.accessibleFieldsBy(ability, 'read'));
+    ctx.body = {
+      user: pick(user, user.accessibleFieldsBy(ability, 'read')),
+      links: {
+        signIn: `${ctx.protocol}://${ctx.host}${prefix}/signin`,
+      },
+    };
   } catch (err) {
     if (err.code === ErrorCodes.DUPLICATE_KEY) {
       ctx.status = 403;
