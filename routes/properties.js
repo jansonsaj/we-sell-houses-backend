@@ -16,7 +16,8 @@ import {
 import Property from '../models/property.js';
 import {propertySearchQuery} from '../helpers/query-builder.js';
 
-const router = new Router({prefix: '/properties'});
+const prefix = '/properties';
+const router = new Router({prefix});
 
 router.get('/', guestOrAuth, validatePropertySearch, getProperties);
 router.post('/', auth, validatePropertyCreate, createProperty);
@@ -63,6 +64,9 @@ async function getProperties(ctx) {
       resultsPerPage: Number(resultsPerPage),
       propertyCount,
       pageCount: Math.ceil(propertyCount / resultsPerPage),
+      links: {
+        create: `${ctx.protocol}://${ctx.host}${prefix}/`,
+      },
     };
   } catch (err) {
     ctx.status = 500;
