@@ -187,7 +187,15 @@
                 "page": { "type":"number" },
                 "resultsPerPage": { "type":"number" },
                 "propertyCount": { "type":"number" },
-                "pageCount": { "type":"number" }
+                "pageCount": { "type":"number" },
+                "links": {
+                    "type": "object",
+                    "properties": {
+                        "create": {
+                            "type": "string"
+                        }
+                    }
+                }
             }
         }
     }
