@@ -1,6 +1,6 @@
-# JANSONSA - We Sell Houses (Backend)
+# We Sell Houses (Backend)
 
-Coursework for 304CEM.
+A Koa API with MongoDB database for estate agents to list properties for sale. Used together with [we-sell-houses-frontend](https://github.com/jansonsaj/we-sell-houses-frontend)
 
 ## MongoDB
 
@@ -19,6 +19,8 @@ Useful commands:
    `git config core.hooksPath .githooks`
 1. Install dependencies:
    `npm install`
+1. Start the server:
+   `npm start`
 
 ## Documentation
 
